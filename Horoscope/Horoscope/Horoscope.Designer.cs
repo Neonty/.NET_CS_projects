@@ -38,6 +38,7 @@
             this.pictureZodiac = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.save = new System.Windows.Forms.Button();
+            this.happy = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureZodiac)).BeginInit();
             this.SuspendLayout();
             // 
@@ -152,7 +153,7 @@
             // save
             // 
             this.save.Font = new System.Drawing.Font("Pristina", 22F);
-            this.save.Location = new System.Drawing.Point(449, 429);
+            this.save.Location = new System.Drawing.Point(761, 435);
             this.save.Name = "save";
             this.save.Size = new System.Drawing.Size(150, 45);
             this.save.TabIndex = 11;
@@ -160,12 +161,28 @@
             this.save.UseVisualStyleBackColor = true;
             this.save.Click += new System.EventHandler(this.save_Click);
             // 
+            // happy
+            // 
+            this.happy.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.happy.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.happy.Font = new System.Drawing.Font("Pristina", 24.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.happy.ForeColor = System.Drawing.SystemColors.Window;
+            this.happy.Location = new System.Drawing.Point(278, 379);
+            this.happy.Margin = new System.Windows.Forms.Padding(2);
+            this.happy.Name = "happy";
+            this.happy.Size = new System.Drawing.Size(376, 49);
+            this.happy.TabIndex = 12;
+            this.happy.Text = "Бақытты санымды білу!";
+            this.happy.UseVisualStyleBackColor = false;
+            this.happy.Click += new System.EventHandler(this.happy_Click);
+            // 
             // Horoscope
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(922, 509);
+            this.Controls.Add(this.happy);
             this.Controls.Add(this.save);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureZodiac);
@@ -196,5 +213,6 @@
         private System.Windows.Forms.PictureBox pictureZodiac;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button save;
+        private System.Windows.Forms.Button happy;
     }
 }
