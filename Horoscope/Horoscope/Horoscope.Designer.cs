@@ -39,6 +39,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.save = new System.Windows.Forms.Button();
             this.happy = new System.Windows.Forms.Button();
+            this.china = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureZodiac)).BeginInit();
             this.SuspendLayout();
             // 
@@ -133,7 +134,7 @@
             this.pictureZodiac.Location = new System.Drawing.Point(841, 630);
             this.pictureZodiac.Name = "pictureZodiac";
             this.pictureZodiac.Size = new System.Drawing.Size(227, 224);
-            this.pictureZodiac.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureZodiac.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureZodiac.TabIndex = 9;
             this.pictureZodiac.TabStop = false;
             // 
@@ -176,12 +177,28 @@
             this.happy.UseVisualStyleBackColor = false;
             this.happy.Click += new System.EventHandler(this.happy_Click);
             // 
+            // china
+            // 
+            this.china.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.china.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.china.Font = new System.Drawing.Font("Pristina", 24.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.china.ForeColor = System.Drawing.SystemColors.Window;
+            this.china.Location = new System.Drawing.Point(164, 426);
+            this.china.Margin = new System.Windows.Forms.Padding(2);
+            this.china.Name = "china";
+            this.china.Size = new System.Drawing.Size(612, 49);
+            this.china.TabIndex = 13;
+            this.china.Text = "Қытай жылнамасы бойынша жануарым!";
+            this.china.UseVisualStyleBackColor = false;
+            this.china.Click += new System.EventHandler(this.china_Click);
+            // 
             // Horoscope
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(922, 509);
+            this.Controls.Add(this.china);
             this.Controls.Add(this.happy);
             this.Controls.Add(this.save);
             this.Controls.Add(this.label1);
@@ -214,5 +231,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button save;
         private System.Windows.Forms.Button happy;
+        private System.Windows.Forms.Button china;
     }
 }
