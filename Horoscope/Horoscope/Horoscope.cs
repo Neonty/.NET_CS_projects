@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Horoscope
 {
@@ -18,17 +22,52 @@ namespace Horoscope
             InitializeComponent();
         }
 
+        private void RoundControl(Control c, int radius)
+        {
+            var path = new GraphicsPath();
+            path.StartFigure();
+            path.AddArc(new Rectangle(0, 0, radius, radius), 180, 90);
+            path.AddArc(new Rectangle(c.Width - radius, 0, radius, radius), 270, 90);
+            path.AddArc(new Rectangle(c.Width - radius, c.Height - radius, radius, radius), 0, 90);
+            path.AddArc(new Rectangle(0, c.Height - radius, radius, radius), 90, 90);
+            path.CloseFigure();
+
+            c.Region = new Region(path);
+        }
+
         private void Horoscope_Load(object sender, EventArgs e)
         {
+
+            RoundControl(button1, 30);
+            RoundControl(save, 30);
+            RoundControl(back, 30);
+            RoundControl(dateTimePicker2, 30);
+            RoundControl(label2, 30);
+            RoundControl(label1, 30);
+
             this.WindowState = FormWindowState.Maximized;
+            this.BackgroundImage = Image.FromFile("C:\\Users\\nurga\\source\\repos\\Horoscope\\Horoscope\\images\\b.png");
+
+
+            label1.Visible = true;
+            label1.Left = (this.ClientSize.Width - label1.Width) / 2;
+            label1.Top = 200;
             label2.Visible = true;
+            label2.Left = (this.ClientSize.Width - label2.Width) / 2;
             dateTimePicker2.Visible = true;
+            dateTimePicker2.Left = (this.ClientSize.Width - dateTimePicker2.Width) / 2;
             button1.Visible = true;
+            button1.Left = (this.ClientSize.Width - button1.Width) / 2;
+            
             back.Visible = false;
+            save.Visible = false;
+            save.Location = back.Location;
+            save.Top = back.Bottom + 10;
+
+            pictureZodiac.Visible = false;
 
             ResultName.Text = "";
             ResultDescription.Text = "";
-
             ResultDescription.AutoSize = true;
             ResultDescription.MaximumSize = new Size(this.Width-500,0);
         }
@@ -137,19 +176,27 @@ namespace Horoscope
             string zodiac = GetZodiac(birthDate);
             ResultName.Text = zodiac+"!";
             ResultDescription.Text = horoscopes[zodiac];
+            RoundControl(ResultDescription, 30);
+            RoundControl(ResultName, 30);
+            ResultDescription.Left = (this.ClientSize.Width - ResultDescription.Width) / 2;
+            ResultName.Left = (this.ClientSize.Width - ResultName.Width) / 2;
 
             dateTimePicker2.Visible = false;
             button1.Visible = false;
             label2.Visible = false;
+            label1.Visible = false;
             back.Visible = true;
+            save.Visible = true;
 
-
-            //pictureZodiac.Image = Image.FromFile($"Images/{zodiac}.png");
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
+            pictureZodiac.Image = Image.FromFile($"C:\\Users\\nurga\\source\\repos\\Horoscope\\Horoscope\\images\\{zodiac}.gif");
+            pictureZodiac.Left = (this.ClientSize.Width - pictureZodiac.Width) / 2;
+            pictureZodiac.Top = ResultDescription.Bottom+10;
+            double d = (double)pictureZodiac.Width * 1.4;
+            pictureZodiac.Width = (int)d;
+            double h = (double)pictureZodiac.Height * 1.4;
+            pictureZodiac.Height = (int)h;
+            pictureZodiac.Left = (this.ClientSize.Width - pictureZodiac.Width) / 2;
+            pictureZodiac.Visible = true;
         }
 
         private void back_Click(object sender, EventArgs e)
@@ -157,10 +204,39 @@ namespace Horoscope
             ResultName.Text = "";
             ResultDescription.Text = "";
 
+            pictureZodiac.Visible = false;
+            pictureZodiac.Width = 227;
+            pictureZodiac.Height = 224;
+
             dateTimePicker2.Visible = true;
             button1.Visible = true;
             label2.Visible = true;
+            label1.Visible = true;
             back.Visible = false;
+            save.Visible = false;
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            // керек емес
+        }
+
+        private void SaveAsTxt(string text)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Text file (*.txt)|*.txt";
+            sfd.FileName = "prediction.txt";
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(sfd.FileName, text, Encoding.UTF8);
+                MessageBox.Show("Файл сәтті сақталды!");
+            }
+        }
+
+        private void save_Click(object sender, EventArgs e)
+        {
+            SaveAsTxt(ResultName.Text + "\r\n\r\n" + ResultDescription.Text);
         }
     }
 }
