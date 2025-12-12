@@ -20,49 +20,6 @@ namespace Horoscope
         public Horoscope()
         {
             InitializeComponent();
-
-            this.Resize += Horoscope_Resize;
-
-            UpdateSizes();
-        }
-
-        private void Horoscope_Resize(object sender, EventArgs e)
-        {
-            UpdateSizes();
-        }
-
-        private void UpdateSizes()
-        {
-            float fontSize1 = Math.Min(this.ClientSize.Width, this.ClientSize.Height) / 35f;
-            fontSize1 = Math.Max(12, Math.Min(fontSize1, 28));
-            float fontSize2 = Math.Max(12, Math.Min(fontSize1,15));
-
-            Font newFont1 = new Font("Pristina", fontSize1, FontStyle.Bold);
-
-            foreach (Control control in this.Controls)
-            {
-                if (control.Visible && control!=ResultDescription)
-                {
-                    control.Font = newFont1;
-                }
-                if (control == ResultDescription)
-                {
-                    ResultDescription.MaximumSize = new Size(this.Width - 100, 0);
-                    control.Font = new Font("Pristina", fontSize2, FontStyle.Bold);
-                    RoundControl(ResultDescription, 30);
-                }
-                if (control == ResultName)
-                {
-                    ResultName.Left = (this.ClientSize.Width - ResultName.Width) / 2;
-                    RoundControl(ResultName, 30);
-                }
-            }
-
-            if (ResultDescription.Visible && pictureZodiac.Visible)
-            {
-                pictureZodiac.Top = ResultDescription.Bottom + 10;
-                pictureZodiac.Left = (this.Width - pictureZodiac.Width) / 2;
-            }
         }
 
         private void RoundControl(Control c, int radius)
@@ -120,7 +77,7 @@ namespace Horoscope
             ResultName.Text = "";
             ResultDescription.Text = "";
             ResultDescription.AutoSize = true;
-            ResultDescription.MaximumSize = new Size(this.Width - 100, 0);
+            ResultDescription.MaximumSize = new Size(this.Width-500,0);
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -243,7 +200,7 @@ namespace Horoscope
             };
 
             int index = (birthDate.Year - 1900) % 12;
-            while (index < 0)
+            while (index < 0) 
                 index += 12;
 
             return animals[index];
@@ -269,7 +226,7 @@ namespace Horoscope
         {
             DateTime birthDate = dateTimePicker2.Value;
             string zodiac = GetZodiac(birthDate);
-            ResultName.Text = zodiac + "!";
+            ResultName.Text = zodiac+"!";
             ResultDescription.Text = horoscopes[zodiac];
             RoundControl(ResultDescription, 30);
             RoundControl(ResultName, 30);
@@ -410,11 +367,6 @@ namespace Horoscope
             pictureZodiac.Left = (this.ClientSize.Width - pictureZodiac.Width) / 2;
             pictureZodiac.Top = ResultDescription.Bottom + 10;
             pictureZodiac.Visible = true;
-        }
-
-        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

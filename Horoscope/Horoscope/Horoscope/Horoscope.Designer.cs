@@ -40,16 +40,14 @@
             this.save = new System.Windows.Forms.Button();
             this.happy = new System.Windows.Forms.Button();
             this.china = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureZodiac)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ResultName
             // 
             this.ResultName.AutoSize = true;
             this.ResultName.BackColor = System.Drawing.Color.MediumSlateBlue;
-            this.ResultName.Font = new System.Drawing.Font("Pristina", 24.25F);
+            this.ResultName.Font = new System.Drawing.Font("Pristina", 24.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ResultName.ForeColor = System.Drawing.SystemColors.Window;
             this.ResultName.Location = new System.Drawing.Point(891, 24);
             this.ResultName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -64,7 +62,7 @@
             this.label2.BackColor = System.Drawing.Color.MediumSlateBlue;
             this.label2.Font = new System.Drawing.Font("Pristina", 24.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.Window;
-            this.label2.Location = new System.Drawing.Point(355, 167);
+            this.label2.Location = new System.Drawing.Point(268, 157);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(400, 50);
@@ -79,8 +77,8 @@
             this.button1.BackColor = System.Drawing.Color.MediumSlateBlue;
             this.button1.Font = new System.Drawing.Font("Pristina", 24.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.SystemColors.Window;
-            this.button1.Location = new System.Drawing.Point(380, 333);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Location = new System.Drawing.Point(292, 332);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(349, 49);
             this.button1.TabIndex = 4;
@@ -98,8 +96,8 @@
             this.dateTimePicker2.CalendarTrailingForeColor = System.Drawing.Color.Thistle;
             this.dateTimePicker2.Font = new System.Drawing.Font("Pristina", 25F);
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker2.Location = new System.Drawing.Point(479, 222);
-            this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(2);
+            this.dateTimePicker2.Location = new System.Drawing.Point(390, 227);
+            this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(151, 51);
             this.dateTimePicker2.TabIndex = 1;
@@ -109,29 +107,25 @@
             // 
             this.ResultDescription.AutoSize = true;
             this.ResultDescription.BackColor = System.Drawing.Color.MediumSlateBlue;
-            this.ResultDescription.Font = new System.Drawing.Font("Pristina", 15F);
+            this.ResultDescription.Font = new System.Drawing.Font("Pristina", 25F);
             this.ResultDescription.ForeColor = System.Drawing.SystemColors.Window;
             this.ResultDescription.Location = new System.Drawing.Point(248, 81);
             this.ResultDescription.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.ResultDescription.Name = "ResultDescription";
-            this.ResultDescription.Size = new System.Drawing.Size(0, 27);
+            this.ResultDescription.Size = new System.Drawing.Size(0, 45);
             this.ResultDescription.TabIndex = 6;
             this.ResultDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // back
             // 
-            this.back.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.back.Font = new System.Drawing.Font("Pristina", 20F);
-            this.back.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.back.Location = new System.Drawing.Point(1001, 442);
-            this.back.Margin = new System.Windows.Forms.Padding(2);
+            this.back.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.back.Font = new System.Drawing.Font("Pristina", 22F);
+            this.back.Location = new System.Drawing.Point(761, 24);
+            this.back.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.back.Name = "back";
-            this.back.Size = new System.Drawing.Size(107, 51);
+            this.back.Size = new System.Drawing.Size(150, 45);
             this.back.TabIndex = 7;
             this.back.Text = "Артқа";
-            this.back.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.back.UseVisualStyleBackColor = true;
             this.back.Click += new System.EventHandler(this.back_Click);
             // 
@@ -146,30 +140,25 @@
             // 
             // label1
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.MediumSlateBlue;
-            this.label1.Font = new System.Drawing.Font("Pristina", 25F);
+            this.label1.Font = new System.Drawing.Font("Pristina", 39.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.Window;
-            this.label1.Location = new System.Drawing.Point(155, 85);
+            this.label1.Location = new System.Drawing.Point(45, 56);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(800, 50);
+            this.label1.Size = new System.Drawing.Size(1174, 70);
             this.label1.TabIndex = 10;
             this.label1.Text = "2025 жылы сізді не күтіп тұрғанын білгіңіз келеме?";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // save
             // 
-            this.save.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.save.Font = new System.Drawing.Font("Pristina", 20F);
-            this.save.Location = new System.Drawing.Point(1002, 498);
+            this.save.Font = new System.Drawing.Font("Pristina", 22F);
+            this.save.Location = new System.Drawing.Point(761, 435);
             this.save.Name = "save";
-            this.save.Size = new System.Drawing.Size(105, 51);
+            this.save.Size = new System.Drawing.Size(150, 45);
             this.save.TabIndex = 11;
             this.save.Text = "Сақтау";
-            this.save.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.save.UseVisualStyleBackColor = true;
             this.save.Click += new System.EventHandler(this.save_Click);
             // 
@@ -179,7 +168,7 @@
             this.happy.BackColor = System.Drawing.Color.MediumSlateBlue;
             this.happy.Font = new System.Drawing.Font("Pristina", 24.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.happy.ForeColor = System.Drawing.SystemColors.Window;
-            this.happy.Location = new System.Drawing.Point(367, 388);
+            this.happy.Location = new System.Drawing.Point(278, 379);
             this.happy.Margin = new System.Windows.Forms.Padding(2);
             this.happy.Name = "happy";
             this.happy.Size = new System.Drawing.Size(376, 49);
@@ -194,7 +183,7 @@
             this.china.BackColor = System.Drawing.Color.MediumSlateBlue;
             this.china.Font = new System.Drawing.Font("Pristina", 24.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.china.ForeColor = System.Drawing.SystemColors.Window;
-            this.china.Location = new System.Drawing.Point(249, 443);
+            this.china.Location = new System.Drawing.Point(164, 426);
             this.china.Margin = new System.Windows.Forms.Padding(2);
             this.china.Name = "china";
             this.china.Size = new System.Drawing.Size(612, 49);
@@ -203,54 +192,29 @@
             this.china.UseVisualStyleBackColor = false;
             this.china.Click += new System.EventHandler(this.china_Click);
             // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("tableLayoutPanel1.BackgroundImage")));
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.Controls.Add(this.china, 1, 7);
-            this.tableLayoutPanel1.Controls.Add(this.back, 2, 7);
-            this.tableLayoutPanel1.Controls.Add(this.label2, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.happy, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.save, 2, 8);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 1, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 9;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1110, 552);
-            this.tableLayoutPanel1.TabIndex = 14;
-            // 
             // Horoscope
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1110, 552);
+            this.ClientSize = new System.Drawing.Size(922, 509);
+            this.Controls.Add(this.china);
+            this.Controls.Add(this.happy);
+            this.Controls.Add(this.save);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureZodiac);
+            this.Controls.Add(this.back);
             this.Controls.Add(this.ResultDescription);
             this.Controls.Add(this.ResultName);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.dateTimePicker2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Horoscope";
             this.Text = "Horoscope";
             this.Load += new System.EventHandler(this.Horoscope_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureZodiac)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -268,6 +232,5 @@
         private System.Windows.Forms.Button save;
         private System.Windows.Forms.Button happy;
         private System.Windows.Forms.Button china;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
