@@ -1,0 +1,67 @@
+@model IEnumerable<TodoListApp.WebApp.Models.TodoTask>
+
+@{
+	ViewData["Title"] = "Tasks";
+	var todoListId = (int)ViewBag.TodoListId;
+}
+
+<div class="page-header">
+	<h1 class="page-title">Tasks</h1>
+	<a asp-controller="TodoList" asp-action="Index" class="btn btn-ghost">&larr; Back to Lists</a>
+</div>
+<div class="task-toolbar">
+	<a asp-action="Create" asp-route-todoListId="@todoListId" class="btn btn-primary">New Task</a>
+</div>
+
+@if (!Model.Any())
+{
+	<p class="empty-message">No tasks yet. Create your first task!</p>
+}
+
+else
+{
+	<div class="task-list">
+		@foreach (var task in Model)
+		{
+			var overdueClass = task.IsOverdue ? "task-card--overdue" : "";
+			<div class="task-card @overdueClass">
+				<div class="task-card__header">
+					<span class="task-card__title">@task.Title</span>
+					<span class="task-card__status task-card__status--@task.Status.ToString().ToLower()">
+						@task.Status
+					</span>
+				</div>
+				@if (!string.IsNullOrWhiteSpace(task.Description))
+				{
+					<div class="task-card__body">@task.Description</div>
+				}
+				<div class="task-card__meta">
+					<span>Created: @task.CreatedAt.ToString("MMM dd, yyyy")</span>
+					@if (task.DueDate.HasValue)
+					{
+						<span class="@(task.IsOverdue ? "text-overdue" : "")">
+							Due: @task.DueDate.Value.ToString("MMM dd, yyyy")
+						</span>
+					}
+				</div>
+				@if (task.Tags != null && task.Tags.Any())
+				{
+					<div class="task-card__tags mt-2 mb-2">
+						@foreach (var tag in task.Tags)
+						{
+							<span class="badge bg-info text-dark me-1">@tag</span>
+						}
+					</div>
+				}
+				<div class="task-card__actions">
+					<a asp-action="Details" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
+					   class="btn btn-ghost">Details</a>
+					<a asp-action="Edit" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
+					   class="btn btn-ghost">Edit</a>
+					<a asp-action="Delete" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
+					   class="btn btn-danger">Delete</a>
+				</div>
+			</div>
+		}
+	</div>
+}

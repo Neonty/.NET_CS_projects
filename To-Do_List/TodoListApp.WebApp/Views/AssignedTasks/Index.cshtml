@@ -1,0 +1,87 @@
+@model IEnumerable<TodoListApp.WebApp.Models.TodoTask>
+@using TodoListApp.WebApp.Models
+
+@{
+	ViewData["Title"] = "My Assigned Tasks";
+	var statusFilter = ViewBag.StatusFilter as string ?? "Active";
+	var sortBy = ViewBag.SortBy as string ?? "DueDate";
+}
+
+<h1>My Assigned Tasks</h1>
+
+<form method="get" class="row g-3 align-items-center mb-4">
+	<div class="col-auto">
+		<label for="status" class="col-form-label">Filter by Status:</label>
+	</div>
+	<div class="col-auto">
+		<select id="status" name="status" class="form-select" onchange="this.form.submit()">
+			<option value="Active" selected="@(statusFilter == "Active")">Active</option>
+			<option value="Completed" selected="@(statusFilter == "Completed")">Completed</option>
+			<option value="All" selected="@(statusFilter == "All")">All</option>
+		</select>
+	</div>
+
+	<div class="col-auto ms-3">
+		<label for="sortBy" class="col-form-label">Sort by:</label>
+	</div>
+	<div class="col-auto">
+		<select id="sortBy" name="sortBy" class="form-select" onchange="this.form.submit()">
+			<option value="DueDate" selected="@(sortBy == "DueDate")">Due Date</option>
+			<option value="Name" selected="@(sortBy == "Name")">Task Name</option>
+		</select>
+	</div>
+</form>
+
+<table class="table table-striped table-hover mt-3">
+	<thead>
+		<tr>
+			<th>Task Name</th>
+			<th>Due Date</th>
+			<th>Current Status</th>
+			<th>Quick Update</th>
+		</tr>
+	</thead>
+	<tbody>
+	    @foreach (var task in Model)
+		{
+			var isOverdue = task.DueDate.HasValue && task.DueDate.Value < DateTime.UtcNow && task.Status != TodoTaskStatus.Completed;
+			var rowClass = isOverdue ? "table-danger" : "";
+
+			<tr class="@rowClass">
+				<td>
+					<a asp-controller="TodoTask" asp-action="Details" asp-route-todoListId="@task.TodoListId" asp-route-id="@task.Id" class="text-decoration-none fw-bold">
+						@task.Title
+					</a>
+				</td>
+				<td>
+					@(task.DueDate?.ToLocalTime().ToString("g") ?? "No due date")
+				</td>
+				<td>
+					@task.Status
+				</td>
+				<td>
+					<form asp-action="ChangeStatus" method="post" class="d-inline-flex align-items-center">
+						<input type="hidden" name="todoListId" value="@task.TodoListId" />
+						<input type="hidden" name="taskId" value="@task.Id" />
+						<input type="hidden" name="statusFilter" value="@statusFilter" />
+						<input type="hidden" name="sortBy" value="@sortBy" />
+						<select name="newStatus" class="form-select form-select-sm me-2" style="width: auto;">
+							@foreach (var statusOption in Enum.GetValues<TodoTaskStatus>())
+							{
+								<option value="@statusOption" selected="@(statusOption == task.Status)">@statusOption</option>
+							}
+						</select>
+						<button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+					</form>
+				</td>
+			</tr>
+		}
+
+		@if (!Model.Any())
+		{
+			<tr>
+				<td colspan="4" class="text-center text-muted py-3">No tasks found matching your criteria.</td>
+			</tr>
+		}
+	</tbody>
+</table>

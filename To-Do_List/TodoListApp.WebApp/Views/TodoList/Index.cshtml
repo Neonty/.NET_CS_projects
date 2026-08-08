@@ -1,0 +1,51 @@
+@model IEnumerable<TodoListApp.WebApp.Models.TodoListWebApiModel>
+
+@{
+    ViewData["Title"] = "My Lists";
+    var colors = new[] { "yellow", "blue", "pink", "orange", "green" };
+    int i = 0;
+}
+
+<div class="page-header">
+    <h1 class="page-title">My Lists</h1>
+</div>
+
+<div class="card-grid">
+    @foreach (var list in Model)
+    {
+        @if (list.AccessLevel != TodoListApp.Data.UserRole.NoAccess)
+        {
+            var color = colors[i++ % colors.Length];
+            <div class="sticky-card sticky-card--@color">
+                <div class="sticky-card__title">@list.Title</div>
+                @if (!string.IsNullOrWhiteSpace(list.Description))
+                {
+                <div class="sticky-card__body">@list.Description</div>
+                }
+                <div class="sticky-card__badge">
+                    @if (list.AccessLevel == TodoListApp.Data.UserRole.Owner) {
+                        <span class="badge bg-primary">Owner</span>
+                    } else if (list.AccessLevel == TodoListApp.Data.UserRole.Editor) {
+                        <span class="badge bg-success">Editor</span>
+                    } else {
+                        <span class="badge bg-secondary">Viewer</span>
+                    }
+                </div>
+                <div class="sticky-card__actions">
+                    <a asp-controller="TodoTask" asp-action="Index" asp-route-todoListId="@list.Id" class="btn btn-primary">Tasks</a>
+                    @if (list.AccessLevel == TodoListApp.Data.UserRole.Owner || list.AccessLevel == TodoListApp.Data.UserRole.Editor)
+                    {
+                        <a asp-action="Edit" asp-route-id="@list.Id" class="btn btn-ghost">Edit</a>
+                    }
+                    @if (list.AccessLevel == TodoListApp.Data.UserRole.Owner)
+                    {
+                        <a asp-action="Delete" asp-route-id="@list.Id" class="btn btn-danger">Delete</a>
+                        <a asp-action="Manage" asp-route-id="@list.Id" class="btn btn-ghost">Share</a>
+                    }
+                </div>
+            </div>
+        }
+    }
+
+    <a asp-action="Create" class="sticky-card sticky-card--add" title="New list">New List</a>
+</div>

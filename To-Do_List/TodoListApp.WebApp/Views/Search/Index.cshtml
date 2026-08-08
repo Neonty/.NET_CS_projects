@@ -1,0 +1,121 @@
+@model IEnumerable<TodoListApp.WebApp.Models.TodoTask>
+@using TodoListApp.WebApp.Models
+
+@{
+	ViewData["Title"] = "Search Tasks";
+	var hasSearched = !string.IsNullOrEmpty(ViewBag.TitleFilter) || !string.IsNullOrEmpty(ViewBag.DateFromFilter) || !string.IsNullOrEmpty(ViewBag.DateToFilter) || !string.IsNullOrEmpty(ViewBag.StatusFilter) || !string.IsNullOrEmpty(ViewBag.SortByFilter);
+}
+
+<h1 class="mb-4">Search Tasks</h1>
+
+<div class="card shadow-sm mb-4">
+	<div class="card-body">
+		<form method="get" asp-action="Index">
+			<div class="row g-3">
+				<div class="col-md-3">
+					<label for="title" class="form-label">Task Title</label>
+					<input type="text" class="form-control" id="title" name="title" value="@ViewBag.TitleFilter" placeholder="Keyword in title" />
+				</div>
+				<div class="col-md-2">
+					<label for="dateFrom" class="form-label">Date From</label>
+					<input type="date" class="form-control" id="dateFrom" name="dateFrom" value="@ViewBag.DateFromFilter" />
+				</div>
+				<div class="col-md-2">
+					<label for="dateTo" class="form-label">Date To</label>
+					<input type="date" class="form-control" id="dateTo" name="dateTo" value="@ViewBag.DateToFilter" />
+				</div>
+				<div class="col-md-2">
+					<label for="status" class="form-label">Status</label>
+					<select class="form-select" id="status" name="status">
+						<option value="">Any</option>
+						<option value="NotStarted" selected="@(ViewBag.StatusFilter == "NotStarted")">Not Started</option>
+						<option value="InProgress" selected="@(ViewBag.StatusFilter == "InProgress")">In Progress</option>
+						<option value="Completed" selected="@(ViewBag.StatusFilter == "Completed")">Completed</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="sortBy" class="form-label">Sort By</label>
+					<select class="form-select" id="sortBy" name="sortBy">
+						<option value="CreatedAt" selected="@(ViewBag.SortByFilter == "CreatedAt" || string.IsNullOrEmpty(ViewBag.SortByFilter))">Created Date (Desc)</option>
+						<option value="CreatedAtAsc" selected="@(ViewBag.SortByFilter == "CreatedAtAsc")">Created Date (Asc)</option>
+						<option value="DueDate" selected="@(ViewBag.SortByFilter == "DueDate")">Due Date (Asc)</option>
+						<option value="DueDateDesc" selected="@(ViewBag.SortByFilter == "DueDateDesc")">Due Date (Desc)</option>
+						<option value="Title" selected="@(ViewBag.SortByFilter == "Title")">Title (Asc)</option>
+						<option value="TitleDesc" selected="@(ViewBag.SortByFilter == "TitleDesc")">Title (Desc)</option>
+						<option value="Status" selected="@(ViewBag.SortByFilter == "Status")">Status (Asc)</option>
+						<option value="StatusDesc" selected="@(ViewBag.SortByFilter == "StatusDesc")">Status (Desc)</option>
+					</select>
+				</div>
+				<div class="col-md-1 d-flex align-items-end">
+					<button type="submit" class="btn btn-primary w-100">Search</button>
+				</div>
+			</div>
+			@if (hasSearched)
+			{
+				<div class="row mt-2">
+					<div class="col text-end">
+						<a asp-action="Index" class="btn btn-link text-decoration-none btn-sm">Clear Filters</a>
+					</div>
+				</div>
+			}
+		</form>
+	</div>
+</div>
+
+@if (hasSearched)
+{
+	<h4>Search Results</h4>
+
+	<table class="table table-striped table-hover mt-3">
+		<thead class="table-dark">
+			<tr>
+				<th>Task Name</th>
+				<th>Created At</th>
+				<th>Due Date</th>
+				<th>Status</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+
+
+		<tbody>
+			@foreach (var task in Model)
+			{
+				var isOverdue = task.DueDate.HasValue && task.DueDate.Value < DateTime.UtcNow && task.Status != TodoTaskStatus.Completed;
+				var rowClass = isOverdue ? "table-danger fw-bold text-danger" : "";
+
+				<tr class="@rowClass">
+					<td>
+						@task.Title
+						@if (isOverdue)
+						{
+							<span class="badge bg-danger ms-2">OVERDUE</span>
+						}
+					</td>
+					<td>@task.CreatedAt.ToLocalTime().ToString("d")</td>
+					<td>@(task.DueDate?.ToLocalTime().ToString("d") ?? "None")</td>
+					<td>@task.Status</td>
+					<td>
+						<a asp-controller="TodoTask" asp-action="Details" asp-route-todoListId="@task.TodoListId" asp-route-id="@task.Id" class="btn btn-sm btn-outline-secondary">
+							View Details
+						</a>
+					</td>
+				</tr>
+			}
+
+			@if (!Model.Any())
+			{
+				<tr>
+					<td colspan="5" class="text-center text-muted py-4">No tasks found matching your search criteria.</td>
+				</tr>
+			}
+
+		</tbody>
+	</table>
+}
+else
+{
+	<div class="alert alert-info">
+		Please enter search criteria above to find tasks.
+	</div>
+}

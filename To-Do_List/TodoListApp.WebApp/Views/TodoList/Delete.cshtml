@@ -1,0 +1,26 @@
+@model TodoListApp.WebApp.Models.TodoListWebApiModel
+
+@{
+    ViewData["Title"] = "Delete List";
+}
+
+<div class="page-header">
+    <h1 class="page-title">Delete List</h1>
+</div>
+
+<div class="form-card">
+    <p>Are you sure you want to delete <strong>@Model.Title</strong>?</p>
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+    <p class="text-muted">@Model.Description</p>
+    }
+
+    <div class="form-actions" style="margin-top: 1.5rem;">
+        <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+@model TodoListApp.WebApp.Models.TodoTask
+
+<div class="mt-5">
+	<h4>Comments (@Model.Comments.Count)</h4>
+
+	<div class="mb-4">
+		<form asp-controller="TodoTaskComments" asp-action="AddComment" method="post">
+			<input type="hidden" name="todoListId" value="@Model.TodoListId" />
+			<input type="hidden" name="taskId" value="@Model.Id" />
+			<input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+			<div class="input-group">
+				<input type="text" name="text" class="form-control" placeholder="Add a comment..." required />
+				<button type="submit" class="btn btn-primary">Comment</button>
+			</div>
+		</form>
+	</div>
+
+	@foreach (var comment in Model.Comments)
+	{
+		<div class="card mb-3">
+			<div class="card-body">
+				<div class="d-flex justify-content-between">
+					<h6 class="card-subtitle mb-2 text-muted">@comment.CreatedBy - @comment.CreatedAt.ToString("g")</h6>
+					@if (User.Identity?.Name == comment.CreatedBy)
+					{
+						<div>
+							<button type="button" class="btn btn-sm btn-outline-secondary me-1" onclick="document.getElementById('edit-form-@comment.Id').classList.toggle('d-none'); document.getElementById('text-@comment.Id').classList.toggle('d-none');">
+								Edit
+							</button>
+							<form asp-controller="TodoTaskComments" asp-action="DeleteComment" method="post" class="d-inline">
+								<input type="hidden" name="todoListId" value="@Model.TodoListId" />
+								<input type="hidden" name="taskId" value="@Model.Id" />
+								<input type="hidden" name="commentId" value="@comment.Id" />
+								<input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+								<button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete comment?');">Delete</button>
+							</form>
+						</div>
+					}
+				</div>
+
+				<p class="card-text mt-2" id="text-@comment.Id">@comment.Text</p>
+
+				<form asp-controller="TodoTaskComments" asp-action="EditComment" method="post" class="d-none mt-2" id="edit-form-@comment.Id">
+					<input type="hidden" name="todoListId" value="@Model.TodoListId" />
+					<input type="hidden" name="taskId" value="@Model.Id" />
+					<input type="hidden" name="commentId" value="@comment.Id" />
+					<input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+					<div class="input-group">
+						<input type="text" name="text" class="form-control" value="@comment.Text" required />
+						<button type="submit" class="btn btn-sm btn-success">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	}
+</div>

@@ -1,0 +1,44 @@
+@model IEnumerable<TodoListApp.WebApp.Models.TodoTask>
+
+@{
+	ViewData["Title"] = $"Tasks tagged with '{ViewBag.TagName}'";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+	<h1>Tasks tagged with <span class="badge bg-info text-dark">@ViewBag.TagName</span></h1>
+	<a asp-action="Index" class="btn btn-secondary">Back to All Tags</a>
+</div>
+
+<table class="table table-striped table-hover mt-3">
+	<thead class="table-dark">
+		<tr>
+			<th>Task Name</th>
+			<th>Due Date</th>
+			<th>Status</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		@foreach (var task in Model)
+		{
+			<tr>
+				<td>@task.Title</td>
+				<td>@(task.DueDate?.ToLocalTime().ToString("d") ?? "None")</td>
+				<td>@task.Status</td>
+				<td>
+					<a asp-controller="TodoTask" asp-action="Details" asp-route-todoListId="@task.TodoListId" asp-route-id="@task.Id" class="btn btn-sm btn-outline-secondary">
+						View Details
+					</a>
+				</td>
+			</tr>
+		}
+
+		@if (!Model.Any())
+		{
+			<tr>
+				<td colspan="4" class="text-center text-muted py-4">No tasks found with this tag.</td>
+			</tr>
+		}
+	</tbody>
+</table>
