@@ -1,17 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace TodoListApp.WebApi.Models;
 
 /// <summary>
-/// Represents a to-do task data object used by the service layer.
+/// Represents a to-do task data object.
 /// </summary>
 public class TodoTask
 {
     /// <summary>Gets or sets the unique identifier of the task.</summary>
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     /// <summary>Gets or sets the title of the task.</summary>
+    [Required]
+    [StringLength(200)]
     public string? Title { get; set; }
 
     /// <summary>Gets or sets the description of the task.</summary>
+    [StringLength(1000)]
     public string? Description { get; set; }
 
     /// <summary>Gets or sets the date when the task was created.</summary>
@@ -33,5 +38,5 @@ public class TodoTask
     public List<string> Tags { get; set; } = new List<string>();
 
     /// <summary>Gets or sets list of comments attached to this task.</summary>
-    public List<TodoTaskCommentModel> Comments { get; set; } = new List<TodoTaskCommentModel>();
+    public List<TodoTaskComment> Comments { get; set; } = new List<TodoTaskComment>();
 }

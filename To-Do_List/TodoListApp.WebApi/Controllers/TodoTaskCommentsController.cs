@@ -31,7 +31,7 @@ public class TodoTaskCommentsController : ControllerBase
     /// <param name="model">The comment data.</param>
     /// <returns>The created comment.</returns>
     [HttpPost]
-    public async Task<IActionResult> AddComment(int todoListId, int taskId, [FromBody] TodoTaskCommentModel model)
+    public async Task<IActionResult> AddComment(int todoListId, int taskId, [FromBody] TodoTaskComment model)
     {
         _ = todoListId;
         this.logger.LogInformation("Adding comment to task {TaskId} in list {TodoListId}.", taskId, todoListId);
@@ -47,7 +47,7 @@ public class TodoTaskCommentsController : ControllerBase
     /// <param name="model">The updated comment data.</param>
     /// <returns>The updated comment.</returns>
     [HttpPut("{commentId:int}")]
-    public async Task<IActionResult> EditComment(int todoListId, int taskId, int commentId, [FromBody] TodoTaskCommentModel model)
+    public async Task<IActionResult> EditComment(int todoListId, int taskId, int commentId, [FromBody] TodoTaskComment model)
     {
         _ = todoListId;
         _ = taskId;

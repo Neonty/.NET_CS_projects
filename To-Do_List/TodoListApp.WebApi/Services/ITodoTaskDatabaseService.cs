@@ -65,13 +65,13 @@ public interface ITodoTaskDatabaseService
     /// <summary>Adds a new comment to a task.</summary>
     /// <param name="comment">The comment to add.</param>
     /// <returns>The created comment model.</returns>
-    Task<TodoTaskCommentModel> AddCommentAsync(TodoTaskCommentModel comment);
+    Task<TodoTaskComment> AddCommentAsync(TodoTaskComment comment);
 
     /// <summary>Updates the text of an existing comment.</summary>
     /// <param name="commentId">The comment identifier.</param>
     /// <param name="text">The new comment text.</param>
     /// <returns>The updated comment, or null if not found.</returns>
-    Task<TodoTaskCommentModel?> UpdateCommentAsync(int commentId, string text);
+    Task<TodoTaskComment?> UpdateCommentAsync(int commentId, string text);
 
     /// <summary>Deletes a comment.</summary>
     /// <param name="commentId">The comment identifier.</param>

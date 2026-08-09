@@ -370,7 +370,7 @@ public class TodoTaskDatabaseService : ITodoTaskDatabaseService
     }
 
     /// <inheritdoc/>
-    public async Task<TodoTaskCommentModel> AddCommentAsync(TodoTaskCommentModel comment)
+    public async Task<TodoTaskComment> AddCommentAsync(TodoTaskComment comment)
     {
         this.logger.LogInformation("Adding a new comment to task ID {TaskId}.", comment.TodoTaskId);
         var entity = new TodoTaskCommentEntity
@@ -390,7 +390,7 @@ public class TodoTaskDatabaseService : ITodoTaskDatabaseService
     }
 
     /// <inheritdoc/>
-    public async Task<TodoTaskCommentModel?> UpdateCommentAsync(int commentId, string text)
+    public async Task<TodoTaskComment?> UpdateCommentAsync(int commentId, string text)
     {
         this.logger.LogInformation("Updating comment ID {CommentId}.", commentId);
         var entity = await this.context.Comments.FindAsync(commentId);
@@ -401,7 +401,7 @@ public class TodoTaskDatabaseService : ITodoTaskDatabaseService
 
         entity.Text = text;
         await this.context.SaveChangesAsync();
-        return new TodoTaskCommentModel { Id = entity.Id, Text = entity.Text, CreatedAt = entity.CreatedAt, CreatedBy = entity.CreatedBy, TodoTaskId = entity.TodoTaskId };
+        return new TodoTaskComment { Id = entity.Id, Text = entity.Text, CreatedAt = entity.CreatedAt, CreatedBy = entity.CreatedBy, TodoTaskId = entity.TodoTaskId };
     }
 
     /// <inheritdoc/>
@@ -432,7 +432,7 @@ public class TodoTaskDatabaseService : ITodoTaskDatabaseService
             AssignedTo = entity.AssignedTo,
             TodoListId = entity.TodoListId,
             Tags = entity.Tags.Select(t => t.Name).ToList(),
-            Comments = entity.Comments.Select(c => new TodoTaskCommentModel
+            Comments = entity.Comments.Select(c => new TodoTaskComment
             {
                 Id = c.Id,
                 Text = c.Text,

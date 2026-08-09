@@ -59,7 +59,7 @@ public class TagsController : ControllerBase
 
         this.logger.LogInformation("Fetching tasks for tag {TagName} accessible to user {UserId} from API.", tagName, userId);
         var tasks = await this.taskService.GetTasksByTagAsync(tagName, userId);
-        var models = tasks.Select(t => new TodoTaskModel
+        var models = tasks.Select(t => new TodoTask
         {
             Id = t.Id,
             Title = t.Title,

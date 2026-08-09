@@ -6,7 +6,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <ProjectReference Include="..\TodoListApp.Data\TodoListApp.Data.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
   </ItemGroup>
 
   <PropertyGroup>

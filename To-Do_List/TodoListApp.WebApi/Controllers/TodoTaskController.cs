@@ -28,14 +28,14 @@ public class TodoTaskController : ControllerBase
 
     /// <summary>Returns all tasks for a given to-do list.</summary>
     /// <param name="todoListId">The to-do list identifier.</param>
-    /// <returns>A JSON array of <see cref="TodoTaskModel"/>.</returns>
+    /// <returns>A JSON array of <see cref="TodoTask"/>.</returns>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<TodoTaskModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<TodoTask>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(int todoListId)
     {
         var tasks = await this.taskService.GetAllTodoTasksAsync(todoListId);
 
-        var models = tasks.Select(t => new TodoTaskModel
+        var models = tasks.Select(t => new TodoTask
         {
             Id = t.Id,
             Title = t.Title,
@@ -57,7 +57,7 @@ public class TodoTaskController : ControllerBase
     /// <param name="id">The task identifier.</param>
     /// <returns>The task model.</returns>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(TodoTaskModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TodoTask), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int todoListId, int id)
     {
@@ -68,7 +68,7 @@ public class TodoTaskController : ControllerBase
             return this.NotFound();
         }
 
-        var model = new TodoTaskModel
+        var model = new TodoTask
         {
             Id = task.Id,
             Title = task.Title,
@@ -90,7 +90,7 @@ public class TodoTaskController : ControllerBase
     /// <param name="model">The task data.</param>
     /// <returns>The created task with status 201.</returns>
     [HttpPost]
-    public async Task<IActionResult> Create(int todoListId, [FromBody] TodoTaskModel model, [FromQuery] string userId)
+    public async Task<IActionResult> Create(int todoListId, [FromBody] TodoTask model, [FromQuery] string userId)
     {
         if (model is null)
         {
@@ -132,10 +132,10 @@ public class TodoTaskController : ControllerBase
     /// <param name="model">The updated task data.</param>
     /// <returns>The updated task model.</returns>
     [HttpPut("{id:int}")]
-    [ProducesResponseType(typeof(TodoTaskModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TodoTask), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(int todoListId, int id, [FromBody] TodoTaskModel model, [FromQuery] string userId)
+    public async Task<IActionResult> Update(int todoListId, int id, [FromBody] TodoTask model, [FromQuery] string userId)
     {
         if (model is null)
         {
@@ -166,7 +166,7 @@ public class TodoTaskController : ControllerBase
                 Tags = model.Tags,
             }, userId);
 
-            return this.Ok(new TodoTaskModel
+            return this.Ok(new TodoTask
             {
                 Id = updated!.Id,
                 Title = updated.Title,

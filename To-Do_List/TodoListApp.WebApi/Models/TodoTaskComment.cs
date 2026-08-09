@@ -1,9 +1,9 @@
 namespace TodoListApp.WebApi.Models;
 
 /// <summary>
-/// Represents a data transfer object for a to-do task comment.
+/// Represents a comment on a to-do task data object.
 /// </summary>
-public class TodoTaskCommentModel
+public class TodoTaskComment
 {
     /// <summary>Gets or sets the comment identifier.</summary>
     public int Id { get; set; }

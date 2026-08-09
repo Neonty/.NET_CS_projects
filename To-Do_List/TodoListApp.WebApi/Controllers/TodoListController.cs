@@ -26,9 +26,9 @@ public class TodoListController : ControllerBase
     }
 
     /// <summary>Returns the list of all to-do lists.</summary>
-    /// <returns>A JSON array of <see cref="TodoListModel"/>.</returns>
+    /// <returns>A JSON array of <see cref="TodoList"/>.</returns>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<TodoListModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<TodoList>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] string userId)
     {
         this.logger.LogInformation("API request received to fetch all todo lists.");
@@ -43,7 +43,7 @@ public class TodoListController : ControllerBase
     }
 
     /// <summary>Returns a specific to-do list</summary>
-    /// <returns><see cref="TodoListModel"/></returns>
+    /// <returns><see cref="TodoList"/></returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id, [FromQuery] string userId)
     {
@@ -72,7 +72,7 @@ public class TodoListController : ControllerBase
     /// <param name="model">The to-do list data.</param>
     /// <returns>The created to-do list with status 201.</returns>
     [HttpPost]
-    [ProducesResponseType(typeof(TodoListModel), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(TodoList), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] TodoList todoList, [FromQuery] string userId)
     {
@@ -92,7 +92,7 @@ public class TodoListController : ControllerBase
     /// <param name="model">The updated to-do list data.</param>
     /// <returns>The updated to-do list.</returns>
     [HttpPut("{id:int}")]
-    [ProducesResponseType(typeof(TodoListModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TodoList), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(int id, [FromBody] TodoList todoList, [FromQuery] string userId)

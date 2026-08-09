@@ -1,17 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace TodoListApp.WebApi.Models;
 
 /// <summary>
-/// Represents a to-do list data object used by the service layer.
+/// Represents a to-do list data object.
 /// </summary>
 public class TodoList
 {
     /// <summary>Gets or sets the unique identifier of the list.</summary>
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     /// <summary>Gets or sets the title of the list.</summary>
+    [Required]
+    [StringLength(200)]
     public string? Title { get; set; }
 
     /// <summary>Gets or sets the description of the list.</summary>
+    [StringLength(1000)]
     public string? Description { get; set; }
 
     /// <summary>Gets or sets the user's access level to this list.</summary>

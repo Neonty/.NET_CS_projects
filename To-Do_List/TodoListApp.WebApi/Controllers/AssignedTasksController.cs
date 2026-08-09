@@ -29,14 +29,14 @@ public class AssignedTasksController : ControllerBase
     /// <param name="userId">The assigned user ID.</param>
     /// <param name="status">Optional status filter ("Active", "Completed", "All").</param>
     /// <param name="sortBy">Optional sort parameter ("Name", "DueDate").</param>
-    /// <returns>A JSON array of <see cref="TodoTaskModel"/>.</returns>
+    /// <returns>A JSON array of <see cref="TodoTask"/>.</returns>
     [HttpGet("{userId}")]
-    [ProducesResponseType(typeof(IEnumerable<TodoTaskModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<TodoTask>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAssignedTasks(string userId, [FromQuery] string? status, [FromQuery] string? sortBy)
     {
         var tasks = await this.taskService.GetAssignedTasksAsync(userId, status, sortBy);
 
-        var models = tasks.Select(t => new TodoTaskModel
+        var models = tasks.Select(t => new TodoTask
         {
             Id = t.Id,
             Title = t.Title,

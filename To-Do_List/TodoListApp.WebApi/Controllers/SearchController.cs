@@ -31,9 +31,9 @@ public class SearchController : Controller
     /// <param name="dateTo">Optional end of date range filter.</param>
     /// <param name="status">Optional status filter ("NotStarted", "InProgress", "Completed").</param>
     /// <param name="sortBy">Optional sort field ("Title", "CreatedAt", "DueDate").</param>
-    /// <returns>A JSON array of <see cref="TodoTaskModel"/>.</returns>
+    /// <returns>A JSON array of <see cref="TodoTask"/>.</returns>
     [HttpGet("tasks")]
-    [ProducesResponseType(typeof(IEnumerable<TodoTaskModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<TodoTask>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchTasks(
         [FromQuery] string? title,
         [FromQuery] DateTime? dateFrom,
@@ -49,7 +49,7 @@ public class SearchController : Controller
 
         var tasks = await this.taskService.SearchTasksAsync(title, dateFrom, dateTo, statusEnum, sortBy);
 
-        var models = tasks.Select(t => new TodoTaskModel
+        var models = tasks.Select(t => new TodoTask
         {
             Id = t.Id,
             Title = t.Title,
