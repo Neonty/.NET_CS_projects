@@ -19,6 +19,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<JwtTokenGenerator>();
+builder.Services.AddTransient<JwtAuthorizationHandler>();
+
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
@@ -33,13 +37,13 @@ builder.Services.AddHttpClient<ITodoListWebApiService, TodoListWebApiService>(cl
 {
     var baseUrl = builder.Configuration["WebApi:BaseUrl"] ?? throw new InvalidOperationException("WebApi:BaseUrl is not configured.");
     client.BaseAddress = new Uri(baseUrl);
-});
+}).AddHttpMessageHandler<JwtAuthorizationHandler>();
 
 builder.Services.AddHttpClient<ITodoTaskWebApiService, TodoTaskWebApiService>(client =>
 {
     var baseUrl = builder.Configuration["WebApi:BaseUrl"] ?? throw new InvalidOperationException("WebApi:BaseUrl is not configured.");
     client.BaseAddress = new Uri(baseUrl);
-});
+}).AddHttpMessageHandler<JwtAuthorizationHandler>();
 
 builder.Services.AddControllersWithViews();
 

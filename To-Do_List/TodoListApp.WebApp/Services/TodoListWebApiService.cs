@@ -26,19 +26,19 @@ public class TodoListWebApiService : ITodoListWebApiService
     {
         this.logger.LogInformation("Getting all todo lists from the web API.");
 
-        return await this.httpClient.GetFromJsonAsync<IEnumerable<TodoListWebApiModel>>($"api/todolists?userId={userId}") ?? Array.Empty<TodoListWebApiModel>();
+        return await this.httpClient.GetFromJsonAsync<IEnumerable<TodoListWebApiModel>>($"api/todolists") ?? Array.Empty<TodoListWebApiModel>();
     }
 
     /// <inheritdoc/>
     public async Task<TodoListWebApiModel?> GetTodoListByIdAsync(int id, string userId)
     {
-        return await this.httpClient.GetFromJsonAsync<TodoListWebApiModel>($"api/todolists/{id}?userId={userId}");
+        return await this.httpClient.GetFromJsonAsync<TodoListWebApiModel>($"api/todolists/{id}");
     }
 
     /// <inheritdoc/>
     public async Task<TodoListWebApiModel> CreateTodoListAsync(TodoListWebApiModel todoList, string userId)
     {
-        var response = await this.httpClient.PostAsJsonAsync($"api/todolists?userId={userId}", todoList);
+        var response = await this.httpClient.PostAsJsonAsync($"api/todolists", todoList);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<TodoListWebApiModel>() ?? throw new InvalidOperationException();
     }
@@ -46,7 +46,7 @@ public class TodoListWebApiService : ITodoListWebApiService
     /// <inheritdoc/>
     public async Task<TodoListWebApiModel?> UpdateTodoListAsync(TodoListWebApiModel todoList, string userId)
     {
-        var response = await this.httpClient.PutAsJsonAsync($"api/todolists/{todoList.Id}?userId={userId}", todoList);
+        var response = await this.httpClient.PutAsJsonAsync($"api/todolists/{todoList.Id}", todoList);
         if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
             return null;
@@ -59,7 +59,7 @@ public class TodoListWebApiService : ITodoListWebApiService
     /// <inheritdoc/>
     public async Task<bool> DeleteTodoListAsync(int id, string userId)
     {
-        var response = await this.httpClient.DeleteAsync($"api/todolists/{id}?userId={userId}");
+        var response = await this.httpClient.DeleteAsync($"api/todolists/{id}");
         return response.IsSuccessStatusCode;
     }
 
@@ -68,7 +68,7 @@ public class TodoListWebApiService : ITodoListWebApiService
     {
         this.logger.LogInformation("Adding share for list {ListId}: user {TargetUserId} as {Role}.", todoListId, targetUserId, role);
         var payload = new { UserId = targetUserId, Role = role };
-        var response = await this.httpClient.PostAsJsonAsync($"api/todolists/{todoListId}/share?ownerId={ownerId}", payload);
+        var response = await this.httpClient.PostAsJsonAsync($"api/todolists/{todoListId}/share", payload);
         return response.IsSuccessStatusCode;
     }
 
@@ -76,7 +76,7 @@ public class TodoListWebApiService : ITodoListWebApiService
     public async Task<bool> RemoveShareAsync(int todoListId, string ownerId, string targetUserId)
     {
         this.logger.LogInformation("Removing share for list {ListId}: user {TargetUserId}.", todoListId, targetUserId);
-        var response = await this.httpClient.DeleteAsync($"api/todolists/{todoListId}/share/{targetUserId}?ownerId={ownerId}");
+        var response = await this.httpClient.DeleteAsync($"api/todolists/{todoListId}/share/{targetUserId}");
         return response.IsSuccessStatusCode;
     }
 }

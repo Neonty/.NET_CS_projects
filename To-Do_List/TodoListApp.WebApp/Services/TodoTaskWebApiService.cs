@@ -72,7 +72,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
             Tags = task.Tags,
         };
 
-        var response = await this.httpClient.PostAsJsonAsync($"api/todolists/{todoListId}/tasks?userId={userId}", model);
+        var response = await this.httpClient.PostAsJsonAsync($"api/todolists/{todoListId}/tasks", model);
 
         if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
@@ -108,7 +108,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
             Tags = task.Tags,
         };
 
-        var response = await this.httpClient.PutAsJsonAsync($"api/todolists/{todoListId}/tasks/{task.Id}?userId={userId}", model);
+        var response = await this.httpClient.PutAsJsonAsync($"api/todolists/{todoListId}/tasks/{task.Id}", model);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -139,7 +139,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
     public async Task DeleteTaskAsync(int todoListId, int taskId, string userId)
     {
         this.logger.LogInformation("Sending DELETE request to remove task ID {TaskId} from todo list {TodoListId}.", taskId, todoListId);
-        var response = await this.httpClient.DeleteAsync($"api/todolists/{todoListId}/tasks/{taskId}?userId={userId}");
+        var response = await this.httpClient.DeleteAsync($"api/todolists/{todoListId}/tasks/{taskId}");
 
         if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
@@ -223,7 +223,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
     public async Task<IEnumerable<string>> GetAllTagsAsync(string userId)
     {
         this.logger.LogInformation("Sending GET request to retrieve tags for user {UserId}.", userId);
-        var tags = await this.httpClient.GetFromJsonAsync<IEnumerable<string>>($"api/tags?userId={Uri.EscapeDataString(userId)}");
+        var tags = await this.httpClient.GetFromJsonAsync<IEnumerable<string>>($"api/tags");
         return tags ?? Enumerable.Empty<string>();
     }
 
@@ -232,7 +232,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
     {
         this.logger.LogInformation("Sending GET request to retrieve tasks for tag {TagName} for user {UserId}.", tagName, userId);
 
-        var models = await this.httpClient.GetFromJsonAsync<IEnumerable<TodoTaskWebApiModel>>($"api/tags/{Uri.EscapeDataString(tagName)}/tasks?userId={Uri.EscapeDataString(userId)}");
+        var models = await this.httpClient.GetFromJsonAsync<IEnumerable<TodoTaskWebApiModel>>($"api/tags/{Uri.EscapeDataString(tagName)}/tasks");
         return models?.Select(MapToDomain) ?? Enumerable.Empty<TodoTask>();
     }
 

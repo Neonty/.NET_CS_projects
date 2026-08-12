@@ -53,7 +53,10 @@
 	</dl>
 </div>
 <div>
-	<a asp-action="Edit" asp-route-todoListId="@Model.TodoListId" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+	@if (ViewBag.CanEdit == true)
+	{
+		<a asp-action="Edit" asp-route-todoListId="@Model.TodoListId" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+	}
 	<a asp-action="Index" asp-route-todoListId="@Model.TodoListId" class="btn btn-secondary">Back to List</a>
 </div>
 

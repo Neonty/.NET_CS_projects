@@ -10,7 +10,10 @@
 	<a asp-controller="TodoList" asp-action="Index" class="btn btn-ghost">&larr; Back to Lists</a>
 </div>
 <div class="task-toolbar">
-	<a asp-action="Create" asp-route-todoListId="@todoListId" class="btn btn-primary">New Task</a>
+	@if (ViewBag.CanEdit == true)
+	{
+		<a asp-action="Create" asp-route-todoListId="@todoListId" class="btn btn-primary">New Task</a>
+	}
 </div>
 
 @if (!Model.Any())
@@ -56,10 +59,13 @@ else
 				<div class="task-card__actions">
 					<a asp-action="Details" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
 					   class="btn btn-ghost">Details</a>
-					<a asp-action="Edit" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
-					   class="btn btn-ghost">Edit</a>
-					<a asp-action="Delete" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
-					   class="btn btn-danger">Delete</a>
+					@if (ViewBag.CanEdit == true)
+					{
+						<a asp-action="Edit" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
+						   class="btn btn-ghost">Edit</a>
+						<a asp-action="Delete" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
+						   class="btn btn-danger">Delete</a>
+					}
 				</div>
 			</div>
 		}

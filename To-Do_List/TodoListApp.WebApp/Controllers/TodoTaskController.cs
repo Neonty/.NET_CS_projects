@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using TodoListApp.Data;
 using TodoListApp.WebApp.Data;
 using TodoListApp.WebApp.Models;
 using TodoListApp.WebApp.Services;
@@ -15,6 +16,7 @@ namespace TodoListApp.WebApp.Controllers;
 public class TodoTaskController : Controller
 {
     private readonly ITodoTaskWebApiService taskService;
+    private readonly ITodoListWebApiService listService;
     private readonly ILogger<TodoTaskController> logger;
     private readonly UserManager<ApplicationUser> userManager;
 
@@ -22,10 +24,13 @@ public class TodoTaskController : Controller
     /// Initializes a new instance of the <see cref="TodoTaskController"/> class.
     /// </summary>
     /// <param name="taskService">The Web API task service.</param>
+    /// <param name="listService">The Web API list service.</param>
     /// <param name="logger">The logger instance.</param>
-    public TodoTaskController(ITodoTaskWebApiService taskService, ILogger<TodoTaskController> logger, UserManager<ApplicationUser> userManager)
+    /// <param name="userManager">The user manager.</param>
+    public TodoTaskController(ITodoTaskWebApiService taskService, ITodoListWebApiService listService, ILogger<TodoTaskController> logger, UserManager<ApplicationUser> userManager)
     {
         this.taskService = taskService;
+        this.listService = listService;
         this.logger = logger;
         this.userManager = userManager;
     }
@@ -37,6 +42,16 @@ public class TodoTaskController : Controller
     public async Task<IActionResult> Index(int todoListId)
     {
         this.logger.LogInformation("Requesting tasks for todo list ID {TodoListId}.", todoListId);
+
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId != null)
+        {
+            var todoList = await this.listService.GetTodoListByIdAsync(todoListId, userId);
+            if (todoList != null)
+            {
+                this.ViewBag.CanEdit = todoList.AccessLevel != UserRole.Viewer;
+            }
+        }
 
         var tasks = await this.taskService.GetTasksByTodoListIdAsync(todoListId);
 
@@ -51,6 +66,16 @@ public class TodoTaskController : Controller
     public async Task<IActionResult> Details(int todoListId, int id)
     {
         this.logger.LogInformation("Viewing details for task ID {TaskId} in todo list {TodoListId}.", id, todoListId);
+
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId != null)
+        {
+            var todoList = await this.listService.GetTodoListByIdAsync(todoListId, userId);
+            if (todoList != null)
+            {
+                this.ViewBag.CanEdit = todoList.AccessLevel != UserRole.Viewer;
+            }
+        }
 
         var task = await this.taskService.GetTaskByIdAsync(todoListId, id);
 
