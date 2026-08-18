@@ -1,0 +1,89 @@
+@model TodoListApp.WebApp.ViewComponents.SidebarViewModel
+
+@{
+    var colors = new[] { "red", "cyan", "yellow" };
+    var tagColors = new[] { "tag-pink", "tag-yellow", "" };
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var currentTodoListId = ViewContext.RouteData.Values["todoListId"]?.ToString();
+    var currentTag = ViewContext.RouteData.Values["name"]?.ToString();
+}
+
+<div class="sidebar-header">
+    <span>Menu</span>
+    <span id="sidebar-toggle-inside" style="cursor:pointer; font-size:1.2rem;">&#9776;</span>
+</div>
+
+@if (Model.IsAuthenticated)
+{
+    <nav class="sidebar-nav-section">
+        <a asp-controller="AssignedTasks" asp-action="Index"
+           class="sidebar-nav-link sidebar-nav-link--button @(currentController == "AssignedTasks" ? "active" : "")">
+            <span>Tasks</span>
+        </a>
+    </nav>
+
+    <nav class="sidebar-nav-section">
+        <a asp-controller="TodoList" asp-action="Index" style="text-decoration:none; display:inline-block; margin-bottom: 0.75rem;">
+            <h3 style="margin-bottom:0;" class="@(currentController == "TodoList" && currentAction == "Index" ? "text-danger" : "")">Lists</h3>
+        </a>
+        @{ var i = 0; }
+        @foreach (var list in Model.Lists)
+        {
+            var color = colors[i % colors.Length];
+            var isActive = currentController == "TodoTask" && currentAction == "Index" && currentTodoListId == list.Id.ToString();
+            <a asp-controller="TodoTask" asp-action="Index" asp-route-todoListId="@list.Id"
+               class="sidebar-nav-link @(isActive ? "active" : "")">
+                <span>
+                    <span class="list-color-badge @color"></span>@list.Title
+                </span>
+            </a>
+            i++;
+        }
+        <a asp-controller="TodoList" asp-action="Create" class="sidebar-nav-link" style="color:#999;">
+            <span>+ Add New List</span>
+        </a>
+    </nav>
+
+    <nav class="sidebar-nav-section">
+        <a asp-controller="Tags" asp-action="Index" style="text-decoration:none; display:inline-block; margin-bottom: 0.75rem;">
+            <h3 style="margin-bottom:0;" class="@(currentController == "Tags" && currentAction == "Index" ? "text-danger" : "")">Tags</h3>
+        </a>
+        <div class="tags-container">
+            @{ var t = 0; }
+            @foreach (var tag in Model.Tags)
+            {
+                var tagColor = tagColors[t % tagColors.Length];
+                var isTagActive = currentController == "Tags" && currentAction == "Tasks" && currentTag == tag;
+                <a asp-controller="Tags" asp-action="Tasks" asp-route-name="@tag"
+                   class="sidebar-tag @tagColor @(isTagActive ? "sidebar-tag--active" : "")">@tag</a>
+                t++;
+            }
+        </div>
+    </nav>
+
+    <div style="margin-top:auto; padding-top:1rem; border-top:1px solid #eee;">
+        @if (!string.IsNullOrEmpty(Model.UserEmail))
+        {
+            <div style="padding: 0 1rem 0.5rem 1rem; color: #888; font-size: 0.85rem; word-break: break-all;">
+                @Model.UserEmail
+            </div>
+        }
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            <button type="submit" class="sidebar-nav-link" style="border:none; background:none; width:100%; text-align:left; cursor:pointer;">
+                <span>&#10132; Sign out</span>
+            </button>
+        </form>
+    </div>
+}
+else
+{
+    <div style="margin-top:auto;">
+        <a asp-controller="Account" asp-action="Login" class="sidebar-nav-link">
+            <span>Sign in</span>
+        </a>
+        <a asp-controller="Account" asp-action="Register" class="sidebar-nav-link">
+            <span>Register</span>
+        </a>
+    </div>
+}

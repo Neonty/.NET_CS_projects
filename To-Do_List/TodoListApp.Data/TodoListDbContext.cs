@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace TodoListApp.Data;
@@ -5,7 +7,7 @@ namespace TodoListApp.Data;
 /// <summary>
 /// Represents the Entity Framework Core database context for the TodoListDb database.
 /// </summary>
-public class TodoListDbContext : DbContext
+public class TodoListDbContext : IdentityDbContext<IdentityUser>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TodoListDbContext"/> class.
@@ -34,12 +36,12 @@ public class TodoListDbContext : DbContext
     /// <summary>
     /// Configures the model relationships and constraints.
     /// </summary>
-    /// <param name="modelBuilder">The model builder.</param>
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    /// <param name="builder">The model builder.</param>
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
 
-        modelBuilder.Entity<TodoTaskEntity>(entity =>
+        builder.Entity<TodoTaskEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
@@ -54,14 +56,14 @@ public class TodoListDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<TagEntity>(entity =>
+        builder.Entity<TagEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(50);
             entity.HasIndex(e => e.Name).IsUnique();
         });
 
-        modelBuilder.Entity<TodoTaskCommentEntity>(entity =>
+        builder.Entity<TodoTaskCommentEntity>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Text).IsRequired().HasMaxLength(1000);

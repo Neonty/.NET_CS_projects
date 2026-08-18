@@ -79,4 +79,11 @@ public class TodoListWebApiService : ITodoListWebApiService
         var response = await this.httpClient.DeleteAsync($"api/todolists/{todoListId}/share/{targetUserId}");
         return response.IsSuccessStatusCode;
     }
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<SharedUserInfo>> GetSharedUsersAsync(int todoListId, string ownerId)
+    {
+        this.logger.LogInformation("Getting shared users for list {ListId}.", todoListId);
+        return await this.httpClient.GetFromJsonAsync<IEnumerable<SharedUserInfo>>($"api/todolists/{todoListId}/share") ?? Array.Empty<SharedUserInfo>();
+    }
 }

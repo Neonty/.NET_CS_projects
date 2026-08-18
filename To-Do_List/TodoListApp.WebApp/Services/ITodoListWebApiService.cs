@@ -39,4 +39,10 @@ public interface ITodoListWebApiService
     /// <param name="todoListId">The identifier of the to-do list to remove from.</param>
     /// <returns>True if removed, otherwise false.</returns>
     Task<bool> RemoveShareAsync(int todoListId, string ownerId, string targetUserId);
+
+    /// <summary>Gets the shared users for a to-do list from the Web API.</summary>
+    /// <param name="todoListId">The identifier of the to-do list.</param>
+    /// <param name="ownerId">The owner user identifier.</param>
+    /// <returns>A collection of shared user information.</returns>
+    Task<IEnumerable<SharedUserInfo>> GetSharedUsersAsync(int todoListId, string ownerId);
 }

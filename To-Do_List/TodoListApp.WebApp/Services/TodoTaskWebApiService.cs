@@ -1,4 +1,3 @@
-using System.Formats.Asn1;
 using TodoListApp.WebApp.Models;
 
 namespace TodoListApp.WebApp.Services;
@@ -42,7 +41,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
     {
         this.logger.LogInformation("Sending GET request to retrieve task ID {TaskId} in todo list {TodoListId}.", taskId, todoListId);
 
-        var responce = await this.httpClient.GetAsync($"api/todolists/{todoListId}/tasks/{taskId}");
+        var responce = await this.httpClient.GetAsync(new Uri($"api/todolists/{todoListId}/tasks/{taskId}", UriKind.Relative));
 
         if (responce.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
@@ -83,7 +82,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
 
         var created = await response.Content.ReadFromJsonAsync<TodoTaskWebApiModel>();
 
-        task.Id = created!.Id;
+        task.Id = created!.Id ?? 0;
         task.CreatedAt = created.CreatedAt;
         task.TodoListId = created.TodoListId;
         task.AssignedTo = created.AssignedTo;
@@ -139,7 +138,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
     public async Task DeleteTaskAsync(int todoListId, int taskId, string userId)
     {
         this.logger.LogInformation("Sending DELETE request to remove task ID {TaskId} from todo list {TodoListId}.", taskId, todoListId);
-        var response = await this.httpClient.DeleteAsync($"api/todolists/{todoListId}/tasks/{taskId}");
+        var response = await this.httpClient.DeleteAsync(new Uri($"api/todolists/{todoListId}/tasks/{taskId}", UriKind.Relative));
 
         if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
@@ -261,7 +260,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
     public async Task DeleteCommentAsync(int todoListId, int taskId, int commentId)
     {
         this.logger.LogInformation("Sending DELETE request to delete comment ID {CommentId} from task ID {TaskId}.", commentId, taskId);
-        var response = await this.httpClient.DeleteAsync($"api/todolists/{todoListId}/tasks/{taskId}/comments/{commentId}");
+        var response = await this.httpClient.DeleteAsync(new Uri($"api/todolists/{todoListId}/tasks/{taskId}/comments/{commentId}", UriKind.Relative));
         response.EnsureSuccessStatusCode();
     }
 
@@ -269,7 +268,7 @@ public class TodoTaskWebApiService : ITodoTaskWebApiService
     {
         return new TodoTask
         {
-            Id = m.Id,
+            Id = m.Id ?? 0,
             Title = m.Title,
             Description = m.Description,
             CreatedAt = m.CreatedAt,

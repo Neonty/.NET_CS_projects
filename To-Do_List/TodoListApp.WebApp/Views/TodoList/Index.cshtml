@@ -1,51 +1,53 @@
 @model IEnumerable<TodoListApp.WebApp.Models.TodoListWebApiModel>
 
 @{
-    ViewData["Title"] = "My Lists";
-    var colors = new[] { "yellow", "blue", "pink", "orange", "green" };
-    int i = 0;
+    ViewData["Title"] = "Sticky Wall";
+    var noteColors = new[] { "note-yellow", "note-blue", "note-pink", "note-orange" };
+    int colorIndex = 0;
 }
 
-<div class="page-header">
-    <h1 class="page-title">My Lists</h1>
-</div>
+<h1 class="page-title">Sticky Wall</h1>
 
-<div class="card-grid">
+<div class="sticky-wall">
     @foreach (var list in Model)
     {
         @if (list.AccessLevel != TodoListApp.Data.UserRole.NoAccess)
         {
-            var color = colors[i++ % colors.Length];
-            <div class="sticky-card sticky-card--@color">
-                <div class="sticky-card__title">@list.Title</div>
-                @if (!string.IsNullOrWhiteSpace(list.Description))
-                {
-                <div class="sticky-card__body">@list.Description</div>
-                }
-                <div class="sticky-card__badge">
-                    @if (list.AccessLevel == TodoListApp.Data.UserRole.Owner) {
-                        <span class="badge bg-primary">Owner</span>
-                    } else if (list.AccessLevel == TodoListApp.Data.UserRole.Editor) {
-                        <span class="badge bg-success">Editor</span>
-                    } else {
-                        <span class="badge bg-secondary">Viewer</span>
+            var color = noteColors[colorIndex % noteColors.Length];
+            colorIndex++;
+
+            <a asp-controller="TodoTask" asp-action="Index" asp-route-todoListId="@list.Id"
+               class="sticky-note @color">
+                <div class="sticky-note__title">@list.Title</div>
+                <div class="sticky-note__body">
+                    @if (!string.IsNullOrWhiteSpace(list.Description))
+                    {
+                        @list.Description
+                    }
+                    else
+                    {
+                        <span style="opacity:0.4;">No description</span>
                     }
                 </div>
-                <div class="sticky-card__actions">
-                    <a asp-controller="TodoTask" asp-action="Index" asp-route-todoListId="@list.Id" class="btn btn-primary">Tasks</a>
-                    @if (list.AccessLevel == TodoListApp.Data.UserRole.Owner || list.AccessLevel == TodoListApp.Data.UserRole.Editor)
-                    {
-                        <a asp-action="Edit" asp-route-id="@list.Id" class="btn btn-ghost">Edit</a>
-                    }
-                    @if (list.AccessLevel == TodoListApp.Data.UserRole.Owner)
-                    {
-                        <a asp-action="Delete" asp-route-id="@list.Id" class="btn btn-danger">Delete</a>
-                        <a asp-action="Manage" asp-route-id="@list.Id" class="btn btn-ghost">Share</a>
-                    }
+                <div class="sticky-note__footer">
+                    <span>
+                        @if (list.AccessLevel == TodoListApp.Data.UserRole.Owner)
+                        {
+                            <span class="badge bg-primary" style="font-size:0.7rem;">Owner</span>
+                        }
+                        else if (list.AccessLevel == TodoListApp.Data.UserRole.Editor)
+                        {
+                            <span class="badge bg-success" style="font-size:0.7rem;">Editor</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary" style="font-size:0.7rem;">Viewer</span>
+                        }
+                    </span>
                 </div>
-            </div>
+            </a>
         }
     }
 
-    <a asp-action="Create" class="sticky-card sticky-card--add" title="New list">New List</a>
+    <a asp-action="Create" class="sticky-add-new">+</a>
 </div>

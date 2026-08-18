@@ -1,4 +1,5 @@
-using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.WebApi.Models;
 using TodoListApp.WebApi.Services;
@@ -8,6 +9,7 @@ namespace TodoListApp.WebApi.Controllers;
 /// <summary>
 /// Provides REST API endpoints for managing to-do tasks within a to-do list.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/todolists/{todoListId:int}/tasks")]
 public class TodoTaskController : ControllerBase
@@ -33,8 +35,9 @@ public class TodoTaskController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<TodoTask>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(int todoListId)
     {
-        var tasks = await this.taskService.GetAllTodoTasksAsync(todoListId);
+        this.logger.LogInformation("Fetching all tasks for list {TodoListId}.", todoListId);
 
+        var tasks = await this.taskService.GetAllTodoTasksAsync(todoListId);
         var models = tasks.Select(t => new TodoTask
         {
             Id = t.Id,
@@ -48,7 +51,6 @@ public class TodoTaskController : ControllerBase
             Tags = t.Tags,
             Comments = t.Comments,
         });
-
         return this.Ok(models);
     }
 
@@ -61,14 +63,15 @@ public class TodoTaskController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int todoListId, int id)
     {
-        var task = await this.taskService.GetTaskByIdAsync(id);
+        this.logger.LogInformation("Fetching task {TaskId} from list {TodoListId}.", id, todoListId);
 
+        var task = await this.taskService.GetTaskByIdAsync(id);
         if (task is null || task.TodoListId != todoListId)
         {
             return this.NotFound();
         }
 
-        var model = new TodoTask
+        return this.Ok(new TodoTask
         {
             Id = task.Id,
             Title = task.Title,
@@ -80,9 +83,7 @@ public class TodoTaskController : ControllerBase
             TodoListId = task.TodoListId,
             Tags = task.Tags,
             Comments = task.Comments,
-        };
-
-        return this.Ok(model);
+        });
     }
 
     /// <summary>Creates a new task in the specified to-do list.</summary>
@@ -90,22 +91,20 @@ public class TodoTaskController : ControllerBase
     /// <param name="model">The task data.</param>
     /// <returns>The created task with status 201.</returns>
     [HttpPost]
-    public async Task<IActionResult> Create(int todoListId, [FromBody] TodoTask model, [FromQuery] string userId)
+    public async Task<IActionResult> Create(int todoListId, [FromBody] TodoTask model)
     {
-        if (model is null)
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return this.BadRequest();
+            return this.Unauthorized();
         }
 
-        if (!this.ModelState.IsValid)
+        if (model is null || !this.ModelState.IsValid)
         {
             return this.BadRequest(this.ModelState);
         }
 
-        if (string.IsNullOrEmpty(userId))
-        {
-            return BadRequest("userId is required.");
-        }
+        this.logger.LogInformation("Creating new task '{Title}' in list {TodoListId}.", model.Title, todoListId);
 
         var created = await this.taskService.CreateTaskAsync(new TodoTask
         {
@@ -135,22 +134,20 @@ public class TodoTaskController : ControllerBase
     [ProducesResponseType(typeof(TodoTask), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(int todoListId, int id, [FromBody] TodoTask model, [FromQuery] string userId)
+    public async Task<IActionResult> Update(int todoListId, int id, [FromBody] TodoTask model)
     {
-        if (model is null)
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return this.BadRequest();
+            return this.Unauthorized();
         }
 
-        if (id != model.Id || !this.ModelState.IsValid)
+        if (model is null || id != model.Id || !this.ModelState.IsValid)
         {
             return this.BadRequest(model);
         }
 
-        if (string.IsNullOrEmpty(userId))
-        {
-            return BadRequest("userId is required.");
-        }
+        this.logger.LogInformation("Updating task {TaskId} in list {TodoListId}.", id, todoListId);
 
         try
         {
@@ -186,7 +183,7 @@ public class TodoTaskController : ControllerBase
         }
         catch (UnauthorizedAccessException)
         {
-            return Forbid();
+            return this.Forbid();
         }
     }
 
@@ -197,19 +194,21 @@ public class TodoTaskController : ControllerBase
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int todoListId, int id, [FromQuery] string userId)
+    public async Task<IActionResult> Delete(int todoListId, int id)
     {
-        var task = await this.taskService.GetTaskByIdAsync(id);
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return this.Unauthorized();
+        }
 
+        var task = await this.taskService.GetTaskByIdAsync(id);
         if (task is null || task.TodoListId != todoListId)
         {
             return this.NotFound();
         }
 
-        if (string.IsNullOrEmpty(userId))
-        {
-            return BadRequest("userId is required.");
-        }
+        this.logger.LogInformation("Deleting task {TaskId} from list {TodoListId}.", id, todoListId);
 
         try
         {
@@ -217,8 +216,9 @@ public class TodoTaskController : ControllerBase
         }
         catch (UnauthorizedAccessException)
         {
-            return Forbid();
+            return this.Forbid();
         }
+
         return this.NoContent();
     }
 }

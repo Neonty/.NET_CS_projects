@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.WebApi.Models;
 using TodoListApp.WebApi.Services;
@@ -7,6 +9,7 @@ namespace TodoListApp.WebApi.Controllers;
 /// <summary>
 /// Provides REST API endpoints for managing to-do lists.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/todolists")]
 public class TodoListController : ControllerBase
@@ -25,33 +28,36 @@ public class TodoListController : ControllerBase
         this.logger = logger;
     }
 
-    /// <summary>Returns the list of all to-do lists.</summary>
+    /// <summary>Returns the list of all to-do lists for the authenticated user.</summary>
     /// <returns>A JSON array of <see cref="TodoList"/>.</returns>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<TodoList>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll([FromQuery] string userId)
+    public async Task<IActionResult> GetAll()
     {
         this.logger.LogInformation("API request received to fetch all todo lists.");
 
-        if (string.IsNullOrEmpty(userId))
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return BadRequest("userId is required.");
+            return this.Unauthorized();
         }
 
         var tasks = await this.todoListService.GetAllTodoListsAsync(userId);
         return this.Ok(tasks);
     }
 
-    /// <summary>Returns a specific to-do list</summary>
+    /// <summary>Returns a specific to-do list if the user has access to it.</summary>
+    /// <param name="id">The identifier of the list.</param>
     /// <returns><see cref="TodoList"/></returns>
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id, [FromQuery] string userId)
+    public async Task<IActionResult> GetById(int id)
     {
         this.logger.LogInformation("API request received to fetch the todo list.");
 
-        if (string.IsNullOrEmpty(userId))
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return BadRequest("userId is required.");
+            return this.Unauthorized();
         }
 
         var list = await this.todoListService.GetTodoListByIdAsync(id, userId);
@@ -60,7 +66,7 @@ public class TodoListController : ControllerBase
             return this.NotFound();
         }
 
-        if (list.AccessLevel == TodoListApp.Data.UserRole.NoAccess)
+        if (list.AccessLevel == Data.UserRole.NoAccess)
         {
             return this.Forbid();
         }
@@ -69,40 +75,42 @@ public class TodoListController : ControllerBase
     }
 
     /// <summary>Creates a new to-do list.</summary>
-    /// <param name="model">The to-do list data.</param>
+    /// <param name="todoList">The to-do list data.</param>
     /// <returns>The created to-do list with status 201.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(TodoList), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] TodoList todoList, [FromQuery] string userId)
+    public async Task<IActionResult> Create([FromBody] TodoList todoList)
     {
         this.logger.LogInformation("API request received to create a new todo list titled '{Title}'.", todoList.Title);
 
-        if (string.IsNullOrEmpty(userId))
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return BadRequest("userId is required.");
+            return this.Unauthorized();
         }
 
         var created = await this.todoListService.CreateTodoListAsync(todoList, userId);
-        return this.CreatedAtAction(nameof(this.GetById), new { id = created.Id, userId = userId }, created);
+        return this.CreatedAtAction(nameof(this.GetById), new { id = created.Id }, created);
     }
 
     /// <summary>Updates an existing to-do list.</summary>
     /// <param name="id">The identifier of the list to update.</param>
-    /// <param name="model">The updated to-do list data.</param>
+    /// <param name="todoList">The updated to-do list data.</param>
     /// <returns>The updated to-do list.</returns>
     [HttpPut("{id:int}")]
     [ProducesResponseType(typeof(TodoList), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(int id, [FromBody] TodoList todoList, [FromQuery] string userId)
+    public async Task<IActionResult> Update(int id, [FromBody] TodoList todoList)
     {
-
+        ArgumentNullException.ThrowIfNull(todoList);
         this.logger.LogInformation("API request received to update todo list with ID {Id}.", id);
 
-        if (string.IsNullOrEmpty(userId))
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return BadRequest("userId is required.");
+            return this.Unauthorized();
         }
 
         if (id != todoList.Id)
@@ -132,13 +140,14 @@ public class TodoListController : ControllerBase
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id, [FromQuery] string userId)
+    public async Task<IActionResult> Delete(int id)
     {
         this.logger.LogInformation("API request received to delete todo list with ID {Id}.", id);
 
-        if (string.IsNullOrEmpty(userId))
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return BadRequest("userId is required.");
+            return this.Unauthorized();
         }
 
         try

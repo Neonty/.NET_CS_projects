@@ -32,12 +32,19 @@ public class ShareController : Controller
     /// Adds a user to the shared access list for a specific to-do list.
     /// </summary>
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddUser(int todoListId, string userEmail, UserRole role)
     {
         var ownerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (ownerId == null)
         {
             return Unauthorized();
+        }
+
+        var todoList = await _apiService.GetTodoListByIdAsync(todoListId, ownerId);
+        if (todoList == null || (todoList.AccessLevel != TodoListApp.Data.UserRole.Owner && todoList.AccessLevel != TodoListApp.Data.UserRole.Editor))
+        {
+            return Forbid();
         }
 
         var targetUser = await _userManager.FindByEmailAsync(userEmail);
@@ -58,12 +65,19 @@ public class ShareController : Controller
     /// Removes a user from the shared access list for a specific to-do list.
     /// </summary>
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveUser(int todoListId, string targetUserId)
     {
         var ownerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (ownerId == null)
         {
             return Unauthorized();
+        }
+
+        var todoList = await _apiService.GetTodoListByIdAsync(todoListId, ownerId);
+        if (todoList == null || (todoList.AccessLevel != TodoListApp.Data.UserRole.Owner && todoList.AccessLevel != TodoListApp.Data.UserRole.Editor))
+        {
+            return Forbid();
         }
 
         _logger.LogInformation("User {OwnerId} is revoking access from {TargetUserId} on list {ListId}", ownerId, targetUserId, todoListId);

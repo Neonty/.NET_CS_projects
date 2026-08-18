@@ -205,10 +205,13 @@ public class TodoTaskDatabaseService : ITodoTaskDatabaseService
         return list.Select(MapToDomain);
     }
 
-    /// <inheritdoc/>
-    public async Task<IEnumerable<TodoTask>> SearchTasksAsync(string? title, DateTime? dateFrom, DateTime? dateTo, Models.TodoTaskStatus? status, string? sortBy)
+    public async Task<IEnumerable<TodoTask>> SearchTasksAsync(string userId, string? title, DateTime? dateFrom, DateTime? dateTo, Models.TodoTaskStatus? status, string? sortBy)
     {
-        var query = this.context.TodoTasks.Include(t => t.Tags).Include(t => t.Comments).AsQueryable();
+        var accessibleListIds = await this.GetAccessibleListIdsAsync(userId);
+        var query = this.context.TodoTasks
+            .Include(t => t.Tags).Include(t => t.Comments)
+            .Where(t => accessibleListIds.Contains(t.TodoListId))
+            .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(title))
         {

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.WebApi.Models;
 using TodoListApp.WebApi.Services;
@@ -7,6 +9,7 @@ namespace TodoListApp.WebApi.Controllers;
 /// <summary>
 /// Controller for managing tags and retrieving tasks by tag in the Web API.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/tags")]
 public class TagsController : ControllerBase
@@ -28,14 +31,14 @@ public class TagsController : ControllerBase
     /// <summary>
     /// Gets a list of tags attached to tasks in to-do lists the requesting user has access to (owned or shared).
     /// </summary>
-    /// <param name="userId">The identifier of the requesting user.</param>
     /// <returns>An action result containing a list of tag names.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllTags([FromQuery] string userId)
+    public async Task<IActionResult> GetAllTags()
     {
-        if (string.IsNullOrEmpty(userId))
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return this.BadRequest("userId is required.");
+            return this.Unauthorized();
         }
 
         this.logger.LogInformation("Fetching tags accessible to user {UserId} from API.", userId);
@@ -47,14 +50,14 @@ public class TagsController : ControllerBase
     /// Gets a list of tasks that have the specified tag attached, restricted to to-do lists the requesting user has access to.
     /// </summary>
     /// <param name="tagName">The name of the tag.</param>
-    /// <param name="userId">The identifier of the requesting user.</param>
     /// <returns>An action result containing a list of tasks.</returns>
     [HttpGet("{tagName}/tasks")]
-    public async Task<IActionResult> GetTasksByTag(string tagName, [FromQuery] string userId)
+    public async Task<IActionResult> GetTasksByTag(string tagName)
     {
-        if (string.IsNullOrEmpty(userId))
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
         {
-            return this.BadRequest("userId is required.");
+            return this.Unauthorized();
         }
 
         this.logger.LogInformation("Fetching tasks for tag {TagName} accessible to user {UserId} from API.", tagName, userId);

@@ -10,54 +10,48 @@
 	<link rel="stylesheet" href="~/TodoListApp.WebApp.styles.css" asp-append-version="true" />
 </head>
 <body>
-	<header>
-		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-			<div class="container-fluid">
-				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TodoListApp.WebApp</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-						aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-					<ul class="navbar-nav flex-grow-1">
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="TodoList" asp-action="Index">Todo Lists</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link fw-bold text-primary" asp-area="" asp-controller="AssignedTasks" asp-action="Index">My Tasks</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Search" asp-action="Index">Search</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-						</li>
-					</ul>
-					<partial name="_LoginPartial" />
-				</div>
-			</div>
-		</nav>
-	</header>
-	<div class="container">
-		<main role="main" class="pb-3">
+	<div id="page-loader" class="page-loader hidden" role="status" aria-label="Loading">
+		<div class="spinner-border" role="status">
+			<span class="visually-hidden">Loading...</span>
+		</div>
+	</div>
+	<div class="dashboard-container">
+		<aside class="dashboard-sidebar" id="app-sidebar">
+			@await Component.InvokeAsync("Sidebar")
+		</aside>
+		
+		<main role="main" class="dashboard-main">
+            <div style="margin-bottom: 2rem;">
+                <span id="sidebar-toggle-btn" style="cursor:pointer; font-size:1.5rem; display:none; line-height: 1;">&#9776;</span>
+            </div>
 			@RenderBody()
 		</main>
 	</div>
 
-	<footer class="border-top footer text-muted">
-		<div class="container">
-			&copy; 2026 - TodoListApp.WebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-		</div>
-	</footer>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var sidebar = document.getElementById("app-sidebar");
+            var toggleInside = document.getElementById("sidebar-toggle-inside");
+            var toggleBtn = document.getElementById("sidebar-toggle-btn");
+
+            if(toggleInside && sidebar && toggleBtn) {
+                toggleInside.addEventListener("click", function() {
+                    sidebar.classList.add("collapsed");
+                    toggleBtn.style.display = "inline-block";
+                });
+            }
+
+            if(toggleBtn && sidebar) {
+                toggleBtn.addEventListener("click", function() {
+                    sidebar.classList.remove("collapsed");
+                    toggleBtn.style.display = "none";
+                });
+            }
+        });
+    </script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

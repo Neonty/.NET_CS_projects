@@ -4,21 +4,25 @@
 	ViewData["Title"] = "All Tags";
 }
 
-<h1>All Tags</h1>
-<p class="text-muted">Select a tag to view all associated tasks.</p>
+<div class="shiny-card mb-5">
+    <h1 class="page-title mb-2" style="font-size: 2rem;">All Tags</h1>
+    <p class="text-muted" style="font-size: 1.1rem; margin-bottom: 2.5rem;">Select a tag to view all associated tasks.</p>
 
-<div class="mt-4">
-	@if (Model != null && Model.Any())
-	{
-		@foreach (var tag in Model)
-		{
-			<a asp-controller="Tags" asp-action="Tasks" asp-route-name="@tag" class="btn btn-outline-primary m-1">
-				@tag
-			</a>
-		}
-	}
-	else
-	{
-		<div class="alert alert-info">There are currently no tags created in the system.</div>
-	}
+    <div class="tags-grid" style="display: flex; flex-wrap: wrap; gap: 1rem;">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var tag in Model)
+            {
+                <a asp-controller="Tags" asp-action="Tasks" asp-route-name="@tag" class="shiny-tag-pill">
+                    #@tag
+                </a>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info w-100" style="background-color: #f5f7f9; border:none; color: #555; border-radius: 12px; padding: 1.5rem;">
+                There are currently no tags created in the system. Create tags when adding or editing tasks!
+            </div>
+        }
+    </div>
 </div>

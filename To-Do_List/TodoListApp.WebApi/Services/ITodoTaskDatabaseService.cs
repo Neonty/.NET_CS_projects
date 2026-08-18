@@ -49,7 +49,7 @@ public interface ITodoTaskDatabaseService
     /// <param name="status">Optional status filter.</param>
     /// <param name="sortBy">Optional sort field ("Title", "CreatedAt", "DueDate").</param>
     /// <returns>A collection of matching <see cref="TodoTask"/> objects.</returns>
-    Task<IEnumerable<TodoTask>> SearchTasksAsync(string? title, DateTime? dateFrom, DateTime? dateTo, Models.TodoTaskStatus? status, string? sortBy);
+    Task<IEnumerable<TodoTask>> SearchTasksAsync(string userId, string? title, DateTime? dateFrom, DateTime? dateTo, Models.TodoTaskStatus? status, string? sortBy);
 
     /// <summary>Returns all tags attached to tasks in to-do lists the given user can access (owned or shared).</summary>
     /// <param name="userId">The identifier of the user requesting the tags.</param>

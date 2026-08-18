@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using TodoListApp.WebApi.Models;
 using TodoListApp.WebApi.Services;
 
@@ -7,6 +9,7 @@ namespace TodoListApp.WebApi.Controllers;
 /// <summary>
 /// Provides REST API endpoints for searching tasks globally.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/search")]
 public class SearchController : Controller
@@ -41,13 +44,19 @@ public class SearchController : Controller
         [FromQuery] string? status,
         [FromQuery] string? sortBy)
     {
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return this.Unauthorized();
+        }
+
         Models.TodoTaskStatus? statusEnum = null;
         if (!string.IsNullOrEmpty(status) && Enum.TryParse<Models.TodoTaskStatus>(status, ignoreCase: true, out var parsed))
         {
             statusEnum = parsed;
         }
 
-        var tasks = await this.taskService.SearchTasksAsync(title, dateFrom, dateTo, statusEnum, sortBy);
+        var tasks = await this.taskService.SearchTasksAsync(userId, title, dateFrom, dateTo, statusEnum, sortBy);
 
         var models = tasks.Select(t => new TodoTask
         {

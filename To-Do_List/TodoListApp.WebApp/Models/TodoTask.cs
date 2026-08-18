@@ -6,7 +6,7 @@ namespace TodoListApp.WebApp.Models;
 public class TodoTask
 {
     /// <summary>Gets or sets the unique identifier of the task.</summary>
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>Gets or sets the title of the task.</summary>
     public string? Title { get; set; }

@@ -1,73 +1,83 @@
 @model IEnumerable<TodoListApp.WebApp.Models.TodoTask>
+@using TodoListApp.WebApp.Models
 
 @{
-	ViewData["Title"] = "Tasks";
-	var todoListId = (int)ViewBag.TodoListId;
+    ViewData["Title"] = "Sticky Wall";
+    var todoListId = (int)ViewBag.TodoListId;
 }
 
-<div class="page-header">
-	<h1 class="page-title">Tasks</h1>
-	<a asp-controller="TodoList" asp-action="Index" class="btn btn-ghost">&larr; Back to Lists</a>
+<h1 class="page-title">Sticky Wall</h1>
+
+<div class="skeleton-wall" aria-hidden="true">
+    @for (var i = 0; i < 3; i++)
+    {
+        <div class="skeleton-card">
+            <div class="skeleton-line skeleton-line--title"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line skeleton-line--short"></div>
+        </div>
+    }
 </div>
-<div class="task-toolbar">
-	@if (ViewBag.CanEdit == true)
-	{
-		<a asp-action="Create" asp-route-todoListId="@todoListId" class="btn btn-primary">New Task</a>
-	}
-</div>
+
+<div class="page-content" style="padding-bottom: 180px;">
+@if (Model.Any() || ViewBag.CanEdit == true)
+{
+    <div class="sticky-wall">
+        @foreach (var task in Model)
+        {
+            var isOverdue = task.IsOverdue;
+            var statusKey = task.Status.GetStatusCssClass().Replace("status-", string.Empty);
+            var cardClass = isOverdue ? "sticky-note--overdue" : $"sticky-note--{statusKey}";
+
+            <a asp-action="Details" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
+               class="sticky-note @cardClass">
+                <div class="sticky-note__title">@task.Title</div>
+                <div class="sticky-note__body">
+                    @if (!string.IsNullOrWhiteSpace(task.Description))
+                    {
+                        @task.Description
+                    }
+                    else
+                    {
+                        <span class="text-muted">No description</span>
+                    }
+                </div>
+                <div class="sticky-note__footer">
+                    <span class="status-badge-select @task.Status.GetStatusCssClass()" style="pointer-events:none; padding-right:0.75rem;">@task.Status.GetStatusLabel()</span>
+                    @if (task.DueDate.HasValue)
+                    {
+                        <span class="sticky-note__due @(isOverdue ? "sticky-note__due--overdue" : "")">
+                            Due: @task.DueDate.FormatDueDate()
+                        </span>
+                    }
+                </div>
+            </a>
+        }
+
+        @if (ViewBag.CanEdit == true)
+        {
+            <a asp-action="Create" asp-route-todoListId="@todoListId" class="sticky-add-new">+</a>
+        }
+    </div>
+}
+
+@if (ViewBag.CanEdit == true)
+{
+    <div style="position: fixed; bottom: 1rem; right: 2.5rem; z-index: 1000; display: flex; gap: 1rem;">
+        <a asp-controller="TodoList" asp-action="Edit" asp-route-id="@todoListId" class="btn btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(100, 100, 100, 0.3); text-decoration: none; background-color: #f8f9fa; color: #333; border: 1px solid #ddd;">
+            Edit List
+        </a>
+        <a asp-controller="TodoList" asp-action="Manage" asp-route-id="@todoListId" class="btn btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3); text-decoration: none;">
+            Grant Access
+        </a>
+    </div>
+}
 
 @if (!Model.Any())
 {
-	<p class="empty-message">No tasks yet. Create your first task!</p>
+    ViewData["EmptyTitle"] = "No tasks yet";
+    ViewData["EmptyMessage"] = "Click the + card to create your first task!";
+    ViewData["EmptyIcon"] = "📝";
+    <partial name="_EmptyState" />
 }
-
-else
-{
-	<div class="task-list">
-		@foreach (var task in Model)
-		{
-			var overdueClass = task.IsOverdue ? "task-card--overdue" : "";
-			<div class="task-card @overdueClass">
-				<div class="task-card__header">
-					<span class="task-card__title">@task.Title</span>
-					<span class="task-card__status task-card__status--@task.Status.ToString().ToLower()">
-						@task.Status
-					</span>
-				</div>
-				@if (!string.IsNullOrWhiteSpace(task.Description))
-				{
-					<div class="task-card__body">@task.Description</div>
-				}
-				<div class="task-card__meta">
-					<span>Created: @task.CreatedAt.ToString("MMM dd, yyyy")</span>
-					@if (task.DueDate.HasValue)
-					{
-						<span class="@(task.IsOverdue ? "text-overdue" : "")">
-							Due: @task.DueDate.Value.ToString("MMM dd, yyyy")
-						</span>
-					}
-				</div>
-				@if (task.Tags != null && task.Tags.Any())
-				{
-					<div class="task-card__tags mt-2 mb-2">
-						@foreach (var tag in task.Tags)
-						{
-							<span class="badge bg-info text-dark me-1">@tag</span>
-						}
-					</div>
-				}
-				<div class="task-card__actions">
-					<a asp-action="Details" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
-					   class="btn btn-ghost">Details</a>
-					@if (ViewBag.CanEdit == true)
-					{
-						<a asp-action="Edit" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
-						   class="btn btn-ghost">Edit</a>
-						<a asp-action="Delete" asp-route-todoListId="@todoListId" asp-route-id="@task.Id"
-						   class="btn btn-danger">Delete</a>
-					}
-				</div>
-			</div>
-		}
-	</div>
-}
+</div>

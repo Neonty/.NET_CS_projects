@@ -80,7 +80,7 @@ public class TodoListController : Controller
         return this.RedirectToAction(nameof(this.Index));
     }
 
-    /// <summary>Displays the sharing management page. Only available to the Owner.</summary>
+    /// <summary>Displays the sharing management page. Available to Owner and Editor.</summary>
     /// <param name="id">The to-do list identifier.</param>
     /// <returns>The manage view.</returns>
     [HttpGet]
@@ -93,9 +93,21 @@ public class TodoListController : Controller
         }
 
         var list = await this.todoListService.GetTodoListByIdAsync(id, userId);
-        if (list == null || list.AccessLevel != TodoListApp.Data.UserRole.Owner)
+        if (list == null || (list.AccessLevel != TodoListApp.Data.UserRole.Owner && list.AccessLevel != TodoListApp.Data.UserRole.Editor))
         {
             return this.Forbid();
+        }
+
+        try
+        {
+            var sharedUsers = await this.todoListService.GetSharedUsersAsync(id, userId);
+            ViewBag.SharedUsers = sharedUsers;
+            this.logger.LogInformation("Successfully fetched {Count} shared users for list {ListId}", sharedUsers.Count(), id);
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "Failed to fetch shared users for list {ListId}", id);
+            ViewBag.SharedUsers = new List<SharedUserInfo>();
         }
 
         return this.View(list);

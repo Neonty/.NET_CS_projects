@@ -201,7 +201,7 @@ public class TodoTaskController : Controller
             var assignee = await this.userManager.FindByEmailAsync(task.AssigneeEmail);
             if (assignee == null)
             {
-                this.ModelState.AddModelError(nameof(task.AssigneeEmail), "Пользователь с таким email не найден.");
+                this.ModelState.AddModelError(nameof(task.AssigneeEmail), "User with this email not found.");
                 this.ViewBag.TodoListId = todoListId;
                 return this.View(task);
             }

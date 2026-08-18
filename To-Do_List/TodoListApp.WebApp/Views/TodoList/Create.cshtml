@@ -4,29 +4,30 @@
     ViewData["Title"] = "New List";
 }
 
-<div class="page-header">
-    <h1 class="page-title">New List</h1>
-</div>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="shiny-card mt-4">
+            <h1 class="page-title mb-4 text-center" style="font-size: 2rem;">New List</h1>
 
-<div class="form-card">
-    <form asp-action="Create" method="post">
-        @Html.AntiForgeryToken()
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
 
-        <div class="form-group">
-            <label asp-for="Title">Title</label>
-            <input asp-for="Title" class="form-control" placeholder="List title…" />
-            <span asp-validation-for="Title" class="field-error"></span>
+                <div class="mb-4">
+                    <label asp-for="Title" class="form-label fw-bold">Title</label>
+                    <input asp-for="Title" class="shiny-input" placeholder="List title…" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-5">
+                    <label asp-for="Description" class="form-label fw-bold">Description</label>
+                    <textarea asp-for="Description" class="shiny-input" rows="4" placeholder="What is this list for?"></textarea>
+                </div>
+
+                <div class="d-flex gap-3 mt-4">
+                    <button type="submit" class="shiny-btn flex-grow-1">Create List</button>
+                    <a asp-action="Index" class="shiny-btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
-
-        <div class="form-group">
-            <label asp-for="Description">Description</label>
-            <textarea asp-for="Description" class="form-control" rows="3"
-                      placeholder="What is this list for?"></textarea>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Create</button>
-            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
-        </div>
-    </form>
+    </div>
 </div>

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoListApp.WebApi.Models;
 using TodoListApp.WebApi.Services;
@@ -7,6 +9,7 @@ namespace TodoListApp.WebApi.Controllers;
 /// <summary>
 /// Provides REST API endpoints for managing task comments.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/todolists/{todoListId:int}/tasks/{taskId:int}/comments")]
 public class TodoTaskCommentsController : ControllerBase
@@ -33,9 +36,20 @@ public class TodoTaskCommentsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddComment(int todoListId, int taskId, [FromBody] TodoTaskComment model)
     {
-        _ = todoListId;
+        ArgumentNullException.ThrowIfNull(model);
         this.logger.LogInformation("Adding comment to task {TaskId} in list {TodoListId}.", taskId, todoListId);
+
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return this.Unauthorized();
+        }
+
+        var userName = this.User.Identity?.Name ?? this.User.FindFirstValue(ClaimTypes.Name);
+
         model.TodoTaskId = taskId;
+        model.CreatedBy = !string.IsNullOrEmpty(userName) ? userName : userId;
+
         var created = await this.taskService.AddCommentAsync(model);
         return this.Ok(created);
     }
@@ -49,9 +63,16 @@ public class TodoTaskCommentsController : ControllerBase
     [HttpPut("{commentId:int}")]
     public async Task<IActionResult> EditComment(int todoListId, int taskId, int commentId, [FromBody] TodoTaskComment model)
     {
+        ArgumentNullException.ThrowIfNull(model);
         _ = todoListId;
-        _ = taskId;
         this.logger.LogInformation("Editing comment {CommentId} for task {TaskId}.", commentId, taskId);
+
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return this.Unauthorized();
+        }
+
         var updated = await this.taskService.UpdateCommentAsync(commentId, model.Text);
         if (updated == null)
         {
@@ -70,8 +91,14 @@ public class TodoTaskCommentsController : ControllerBase
     public async Task<IActionResult> DeleteComment(int todoListId, int taskId, int commentId)
     {
         _ = todoListId;
-        _ = taskId;
         this.logger.LogInformation("Deleting comment {CommentId} from task {TaskId}.", commentId, taskId);
+
+        var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return this.Unauthorized();
+        }
+
         var success = await this.taskService.DeleteCommentAsync(commentId);
         if (!success)
         {

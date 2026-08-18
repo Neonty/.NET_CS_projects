@@ -1,0 +1,11 @@
+@{
+    var title = ViewData["EmptyTitle"] as string ?? "No tasks found";
+    var message = ViewData["EmptyMessage"] as string ?? "Try adjusting your filters or create a new task.";
+    var icon = ViewData["EmptyIcon"] as string ?? "📋";
+}
+
+<div class="empty-state">
+    <div class="empty-state__icon" aria-hidden="true">@icon</div>
+    <h3 class="empty-state__title">@title</h3>
+    <p class="empty-state__message">@message</p>
+</div>
